@@ -1,6 +1,6 @@
 "use client"
 
-import { Scissors, Combine, FileImage } from "lucide-react"
+import { Scissors, Combine, FileImage, GripVertical } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { PDFToolCard } from "@/components/pdf-tool-card"
@@ -29,6 +29,13 @@ export default function Home() {
       icon: Combine,
       title: t('tools.merge.title'),
       description: t('tools.merge.description'),
+    },
+    {
+      id: "organize-pdf",
+      path: "organize-pdf",
+      icon: GripVertical,
+      title: t('tools.organizePdf.title'),
+      description: t('tools.organizePdf.description'),
     },
     {
       id: "image-to-pdf",

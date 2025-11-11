@@ -8,14 +8,14 @@
     "deselectAll": "Deselect All",
     "cancel": "Cancel",
     "continue": "Continue",
-    "privacyNote": "All processing happens locally in your browser. Your files are never uploaded."
+    "privacyNote": "🔒 100% Private & Secure: All processing happens locally on your device. Your files never leave your computer and are never uploaded to any server."
   },
   "header": {
     "title": "Mon PDF"
   },
   "home": {
     "title": "Choose a tool to get started",
-    "subtitle": "All processing happens in your browser. Your files never leave your device."
+    "subtitle": "🔒 100% Client-Side Processing: Everything happens directly in your browser. Your files stay on your device and are never uploaded to any server. Complete privacy guaranteed."
   },
   "tools": {
     "split": {
@@ -55,6 +55,24 @@
       "imagesUploaded": "images uploaded",
       "convertAll": "Convert to PDF",
       "converting": "Converting..."
+    },
+    "organizePdf": {
+      "title": "Organize PDF",
+      "description": "Reorder and delete pages from your PDF",
+      "heading": "Organize PDF Pages",
+      "intro": "Rearrange pages by dragging and dropping, or delete unwanted pages from your PDF document",
+      "uploadFile": "Upload PDF file",
+      "loadingPages": "Loading pages...",
+      "pageCount": "{count} pages",
+      "dragToReorder": "Drag pages to reorder them",
+      "clickToDelete": "Click the × button to delete a page",
+      "deletePage": "Delete page",
+      "restorePage": "Restore page",
+      "pageDeleted": "Page marked for deletion",
+      "downloadOrganized": "Download Organized PDF",
+      "organizing": "Organizing PDF...",
+      "noPages": "No pages remaining. Please restore at least one page.",
+      "page": "Page"
     }
   },
   "fileUpload": {
@@ -118,6 +136,22 @@
       "feature4": "No Watermarks - Clean, professional output",
       "whyTitle": "Why Convert Images to PDF?",
       "whyDescription": "Converting images to PDF creates a universal format that's easy to share, print, and archive. PDFs preserve image quality and formatting across all devices and platforms, making them ideal for professional documents, presentations, and portfolios."
+    },
+    "organizePdf": {
+      "metaDescription": "Organize PDF pages online for free. Reorder, rearrange, and delete pages from your PDF documents. 100% client-side processing, no upload required.",
+      "heading": "Free Online PDF Page Organizer",
+      "description1": "Organize your PDF documents by reordering and deleting pages with our free online tool. Drag and drop pages to rearrange them, remove unwanted pages, and create a perfectly organized PDF. All processing happens in your browser.",
+      "howToTitle": "How to Organize PDF Pages",
+      "step1": "Upload your PDF file by dragging and dropping or clicking to browse",
+      "step2": "Drag pages to reorder them or click the delete button to remove unwanted pages",
+      "step3": "Click 'Download Organized PDF' to save your reorganized document",
+      "featuresTitle": "Key Features",
+      "feature1": "Drag & Drop - Easy page reordering with visual feedback",
+      "feature2": "Delete Pages - Remove unwanted pages with one click",
+      "feature3": "100% Private - All processing happens locally in your browser",
+      "feature4": "No Limits - Organize PDFs of any size with unlimited pages",
+      "whyTitle": "Why Organize PDF Pages?",
+      "whyDescription": "Organizing PDF pages is essential for creating professional documents, removing unnecessary content, fixing page order mistakes, or preparing documents for printing. Our tool makes it easy to rearrange and clean up your PDFs while maintaining quality and formatting."
     }
   }
 }

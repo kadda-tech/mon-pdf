@@ -8,14 +8,14 @@
     "deselectAll": "Tout désélectionner",
     "cancel": "Annuler",
     "continue": "Continuer",
-    "privacyNote": "Tout le traitement se fait localement dans votre navigateur. Vos fichiers ne sont jamais téléchargés."
+    "privacyNote": "🔒 100% Privé et Sécurisé : Tout le traitement se fait localement sur votre appareil. Vos fichiers ne quittent jamais votre ordinateur et ne sont jamais téléchargés sur un serveur."
   },
   "header": {
     "title": "Mon PDF"
   },
   "home": {
     "title": "Choisissez un outil pour commencer",
-    "subtitle": "Tout le traitement se fait dans votre navigateur. Vos fichiers ne quittent jamais votre appareil."
+    "subtitle": "🔒 Traitement 100% Côté Client : Tout se passe directement dans votre navigateur. Vos fichiers restent sur votre appareil et ne sont jamais téléchargés sur un serveur. Confidentialité totale garantie."
   },
   "tools": {
     "split": {
@@ -55,6 +55,24 @@
       "imagesUploaded": "images téléchargées",
       "convertAll": "Convertir en PDF",
       "converting": "Conversion en cours..."
+    },
+    "organizePdf": {
+      "title": "Organiser PDF",
+      "description": "Réorganiser et supprimer des pages de votre PDF",
+      "heading": "Organiser les pages PDF",
+      "intro": "Réorganisez les pages en les glissant-déposant, ou supprimez les pages indésirables de votre document PDF",
+      "uploadFile": "Télécharger un fichier PDF",
+      "loadingPages": "Chargement des pages...",
+      "pageCount": "{count} pages",
+      "dragToReorder": "Glissez les pages pour les réorganiser",
+      "clickToDelete": "Cliquez sur le bouton × pour supprimer une page",
+      "deletePage": "Supprimer la page",
+      "restorePage": "Restaurer la page",
+      "pageDeleted": "Page marquée pour suppression",
+      "downloadOrganized": "Télécharger le PDF organisé",
+      "organizing": "Organisation du PDF...",
+      "noPages": "Aucune page restante. Veuillez restaurer au moins une page.",
+      "page": "Page"
     }
   },
   "fileUpload": {
@@ -118,6 +136,22 @@
       "feature4": "Sans filigranes - Sortie propre et professionnelle",
       "whyTitle": "Pourquoi convertir des images en PDF?",
       "whyDescription": "La conversion d'images en PDF crée un format universel facile à partager, imprimer et archiver. Les PDFs préservent la qualité et le formatage des images sur tous les appareils et plateformes, ce qui les rend idéaux pour les documents professionnels, les présentations et les portfolios."
+    },
+    "organizePdf": {
+      "metaDescription": "Organiser les pages PDF en ligne gratuitement. Réorganisez, réarrangez et supprimez des pages de vos documents PDF. Traitement 100% côté client, aucun téléchargement requis.",
+      "heading": "Organisateur de pages PDF gratuit en ligne",
+      "description1": "Organisez vos documents PDF en réorganisant et supprimant des pages avec notre outil en ligne gratuit. Glissez-déposez les pages pour les réarranger, supprimez les pages indésirables et créez un PDF parfaitement organisé. Tout le traitement se fait dans votre navigateur.",
+      "howToTitle": "Comment organiser les pages PDF",
+      "step1": "Téléchargez votre fichier PDF en le glissant-déposant ou en cliquant pour parcourir",
+      "step2": "Glissez les pages pour les réorganiser ou cliquez sur le bouton supprimer pour retirer les pages indésirables",
+      "step3": "Cliquez sur 'Télécharger le PDF organisé' pour enregistrer votre document réorganisé",
+      "featuresTitle": "Fonctionnalités clés",
+      "feature1": "Glisser-déposer - Réorganisation facile des pages avec retour visuel",
+      "feature2": "Supprimer des pages - Retirez les pages indésirables en un clic",
+      "feature3": "100% Privé - Tout le traitement se fait localement dans votre navigateur",
+      "feature4": "Sans limites - Organisez des PDFs de toute taille avec un nombre illimité de pages",
+      "whyTitle": "Pourquoi organiser les pages PDF?",
+      "whyDescription": "L'organisation des pages PDF est essentielle pour créer des documents professionnels, supprimer du contenu inutile, corriger l'ordre des pages ou préparer des documents pour l'impression. Notre outil facilite la réorganisation et le nettoyage de vos PDFs tout en maintenant la qualité et le formatage."
     }
   }
 }
