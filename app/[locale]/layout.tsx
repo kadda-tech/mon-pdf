@@ -1,14 +1,13 @@
 import type React from "react"
 import { Geist, Geist_Mono } from "next/font/google"
 import Script from 'next/script'
-// import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next"
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import StoreProvider from "@/components/providers/store-provider"
 import { notFound } from 'next/navigation'
 import { locales } from '@/i18n'
 import "../globals.css"
-
 const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
 
@@ -58,6 +57,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <NextIntlClientProvider messages={messages}>
           <StoreProvider>{children}</StoreProvider>
         </NextIntlClientProvider>
+      <Analytics />
       </body>
     </html>
   )
