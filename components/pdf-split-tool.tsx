@@ -132,7 +132,7 @@ export function PDFSplitTool() {
         URL.revokeObjectURL(url)
       }
     } catch (error) {
-      console.error("[v0] Error splitting PDF:", error)
+      console.error("Error splitting PDF:", error)
     } finally {
       dispatch(setProcessing(false))
     }

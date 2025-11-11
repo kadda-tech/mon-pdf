@@ -73,7 +73,7 @@ export function ImageToPDFTool() {
 
       dispatch(clearFiles())
     } catch (error) {
-      console.error("[v0] Error converting images to PDF:", error)
+      console.error("Error converting images to PDF:", error)
     } finally {
       dispatch(setProcessing(false))
     }

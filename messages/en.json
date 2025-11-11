@@ -69,5 +69,55 @@
     "loading": "Loading PDF...",
     "loadingPage": "Loading page {number}...",
     "page": "Page {number}"
+  },
+  "seo": {
+    "split": {
+      "metaDescription": "Split PDF files online for free. Extract specific pages from your PDF documents quickly and securely. No registration required, 100% client-side processing.",
+      "heading": "Free Online PDF Splitter Tool",
+      "description1": "Our free online PDF splitter allows you to extract specific pages from your PDF documents effortlessly. Whether you need to separate a single page or multiple pages, our tool provides a fast, secure, and user-friendly solution.",
+      "howToTitle": "How to Split a PDF",
+      "step1": "Upload your PDF file by dragging and dropping or clicking to browse",
+      "step2": "Select the pages you want to extract by clicking on them or entering page ranges",
+      "step3": "Click 'Download Selected Pages' to get your new PDF file",
+      "featuresTitle": "Key Features",
+      "feature1": "100% Free - No hidden costs or subscriptions",
+      "feature2": "Secure - All processing happens in your browser, files never leave your device",
+      "feature3": "No Registration - Start splitting PDFs immediately",
+      "feature4": "Fast - Instant processing with no upload time",
+      "whyTitle": "Why Split PDF Files?",
+      "whyDescription": "Splitting PDF files is useful for extracting specific chapters, sharing selected pages, reducing file size, or organizing documents. Whether you're a student, professional, or casual user, our PDF splitter makes the process simple and efficient."
+    },
+    "merge": {
+      "metaDescription": "Merge multiple PDF files into one document online for free. Combine PDFs quickly and securely with no registration required. 100% client-side processing.",
+      "heading": "Free Online PDF Merger Tool",
+      "description1": "Combine multiple PDF files into a single document with our free online PDF merger. Perfect for consolidating reports, combining chapters, or organizing multiple documents into one professional file.",
+      "howToTitle": "How to Merge PDFs",
+      "step1": "Upload multiple PDF files by dragging and dropping or clicking to browse",
+      "step2": "Arrange the files in your desired order by dragging them",
+      "step3": "Click 'Merge All PDFs' to combine them into a single document",
+      "featuresTitle": "Key Features",
+      "feature1": "Unlimited Files - Merge as many PDFs as you need",
+      "feature2": "Drag and Drop - Easy reordering of files before merging",
+      "feature3": "Private - Your files stay on your device, never uploaded to servers",
+      "feature4": "Fast Merging - Instant combination of multiple PDFs",
+      "whyTitle": "Why Merge PDF Files?",
+      "whyDescription": "Merging PDFs is essential for creating comprehensive documents, combining multiple invoices, consolidating reports, or preparing documents for printing. Our tool makes it easy to combine PDFs while maintaining quality and formatting."
+    },
+    "imageToPdf": {
+      "metaDescription": "Convert images to PDF online for free. Transform JPG, PNG, and JPEG files into PDF documents quickly. No file upload required, 100% secure and private.",
+      "heading": "Free Image to PDF Converter",
+      "description1": "Convert your images (JPG, PNG, JPEG) into PDF format with our free online converter. Perfect for creating PDF portfolios, converting scanned documents, or archiving photos in a universal format.",
+      "howToTitle": "How to Convert Images to PDF",
+      "step1": "Upload one or more images (JPG, PNG, JPEG) by dragging and dropping or browsing",
+      "step2": "Arrange the images in your preferred order",
+      "step3": "Click 'Convert to PDF' to create your PDF document",
+      "featuresTitle": "Key Features",
+      "feature1": "Multiple Formats - Supports JPG, PNG, and JPEG",
+      "feature2": "Batch Conversion - Convert multiple images at once",
+      "feature3": "Quality Preserved - Original image quality maintained",
+      "feature4": "No Watermarks - Clean, professional output",
+      "whyTitle": "Why Convert Images to PDF?",
+      "whyDescription": "Converting images to PDF creates a universal format that's easy to share, print, and archive. PDFs preserve image quality and formatting across all devices and platforms, making them ideal for professional documents, presentations, and portfolios."
+    }
   }
 }

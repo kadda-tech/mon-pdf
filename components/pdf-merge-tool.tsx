@@ -57,7 +57,7 @@ export function PDFMergeTool() {
 
       dispatch(clearFiles())
     } catch (error) {
-      console.error("[v0] Error merging PDFs:", error)
+      console.error("Error merging PDFs:", error)
     } finally {
       dispatch(setProcessing(false))
     }

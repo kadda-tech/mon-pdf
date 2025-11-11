@@ -69,5 +69,55 @@
     "loading": "Chargement du PDF...",
     "loadingPage": "Chargement de la page {number}...",
     "page": "Page {number}"
+  },
+  "seo": {
+    "split": {
+      "metaDescription": "Fractionner des fichiers PDF en ligne gratuitement. Extrayez des pages spécifiques de vos documents PDF rapidement et en toute sécurité. Aucune inscription requise, traitement 100% côté client.",
+      "heading": "Outil gratuit de fractionnement de PDF en ligne",
+      "description1": "Notre outil de fractionnement de PDF en ligne gratuit vous permet d'extraire facilement des pages spécifiques de vos documents PDF. Que vous ayez besoin de séparer une seule page ou plusieurs pages, notre outil offre une solution rapide, sécurisée et conviviale.",
+      "howToTitle": "Comment fractionner un PDF",
+      "step1": "Téléchargez votre fichier PDF en le glissant-déposant ou en cliquant pour parcourir",
+      "step2": "Sélectionnez les pages que vous souhaitez extraire en cliquant dessus ou en entrant des plages de pages",
+      "step3": "Cliquez sur 'Télécharger les pages sélectionnées' pour obtenir votre nouveau fichier PDF",
+      "featuresTitle": "Fonctionnalités clés",
+      "feature1": "100% Gratuit - Aucun coût caché ni abonnement",
+      "feature2": "Sécurisé - Tout le traitement se fait dans votre navigateur, les fichiers ne quittent jamais votre appareil",
+      "feature3": "Aucune inscription - Commencez à fractionner des PDF immédiatement",
+      "feature4": "Rapide - Traitement instantané sans temps de téléchargement",
+      "whyTitle": "Pourquoi fractionner des fichiers PDF?",
+      "whyDescription": "Le fractionnement de fichiers PDF est utile pour extraire des chapitres spécifiques, partager des pages sélectionnées, réduire la taille du fichier ou organiser des documents. Que vous soyez étudiant, professionnel ou utilisateur occasionnel, notre outil de fractionnement PDF rend le processus simple et efficace."
+    },
+    "merge": {
+      "metaDescription": "Fusionner plusieurs fichiers PDF en un seul document en ligne gratuitement. Combinez des PDF rapidement et en toute sécurité sans inscription. Traitement 100% côté client.",
+      "heading": "Outil gratuit de fusion de PDF en ligne",
+      "description1": "Combinez plusieurs fichiers PDF en un seul document avec notre outil de fusion PDF en ligne gratuit. Parfait pour consolider des rapports, combiner des chapitres ou organiser plusieurs documents en un seul fichier professionnel.",
+      "howToTitle": "Comment fusionner des PDFs",
+      "step1": "Téléchargez plusieurs fichiers PDF en les glissant-déposant ou en cliquant pour parcourir",
+      "step2": "Organisez les fichiers dans l'ordre souhaité en les faisant glisser",
+      "step3": "Cliquez sur 'Fusionner tous les PDFs' pour les combiner en un seul document",
+      "featuresTitle": "Fonctionnalités clés",
+      "feature1": "Fichiers illimités - Fusionnez autant de PDFs que nécessaire",
+      "feature2": "Glisser-déposer - Réorganisation facile des fichiers avant la fusion",
+      "feature3": "Privé - Vos fichiers restent sur votre appareil, jamais téléchargés sur des serveurs",
+      "feature4": "Fusion rapide - Combinaison instantanée de plusieurs PDFs",
+      "whyTitle": "Pourquoi fusionner des fichiers PDF?",
+      "whyDescription": "La fusion de PDFs est essentielle pour créer des documents complets, combiner plusieurs factures, consolider des rapports ou préparer des documents pour l'impression. Notre outil facilite la combinaison de PDFs tout en maintenant la qualité et le formatage."
+    },
+    "imageToPdf": {
+      "metaDescription": "Convertir des images en PDF en ligne gratuitement. Transformez des fichiers JPG, PNG et JPEG en documents PDF rapidement. Aucun téléchargement de fichier requis, 100% sécurisé et privé.",
+      "heading": "Convertisseur gratuit d'image en PDF",
+      "description1": "Convertissez vos images (JPG, PNG, JPEG) au format PDF avec notre convertisseur en ligne gratuit. Parfait pour créer des portfolios PDF, convertir des documents numérisés ou archiver des photos dans un format universel.",
+      "howToTitle": "Comment convertir des images en PDF",
+      "step1": "Téléchargez une ou plusieurs images (JPG, PNG, JPEG) en les glissant-déposant ou en parcourant",
+      "step2": "Organisez les images dans votre ordre préféré",
+      "step3": "Cliquez sur 'Convertir en PDF' pour créer votre document PDF",
+      "featuresTitle": "Fonctionnalités clés",
+      "feature1": "Plusieurs formats - Prend en charge JPG, PNG et JPEG",
+      "feature2": "Conversion par lots - Convertissez plusieurs images à la fois",
+      "feature3": "Qualité préservée - La qualité d'image originale est maintenue",
+      "feature4": "Sans filigranes - Sortie propre et professionnelle",
+      "whyTitle": "Pourquoi convertir des images en PDF?",
+      "whyDescription": "La conversion d'images en PDF crée un format universel facile à partager, imprimer et archiver. Les PDFs préservent la qualité et le formatage des images sur tous les appareils et plateformes, ce qui les rend idéaux pour les documents professionnels, les présentations et les portfolios."
+    }
   }
 }

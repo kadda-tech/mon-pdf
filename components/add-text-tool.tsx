@@ -83,7 +83,7 @@ export function AddTextTool() {
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      console.error("[v0] Error adding text to PDF:", error)
+      console.error("Error adding text to PDF:", error)
     } finally {
       dispatch(setProcessing(false))
     }
