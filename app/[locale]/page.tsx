@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { PDFToolCard } from "@/components/pdf-tool-card"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { BookmarkButton } from "@/components/bookmark-button"
 
 export default function Home() {
   const t = useTranslations()
@@ -49,11 +50,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Logo" className="h-30 w-30" />
+            <img src="/logo.png" alt="Logo" className="h-10 w-10" />
+            <h1 className="text-2xl font-bold hidden sm:block">{t('header.title')}</h1>
           </div>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-3">
+            <BookmarkButton />
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 

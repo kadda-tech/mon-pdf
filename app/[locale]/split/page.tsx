@@ -5,6 +5,7 @@ import { PDFSplitTool } from "@/components/pdf-split-tool"
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation'
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { BookmarkButton } from "@/components/bookmark-button"
 
 export default function SplitPDFPage() {
   const t = useTranslations()
@@ -18,7 +19,10 @@ export default function SplitPDFPage() {
             <img src="/logo.png" alt="Logo" className="h-10 w-10" />
             <h1 className="text-2xl font-bold">{t('header.title')}</h1>
           </div>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-3">
+            <BookmarkButton />
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 

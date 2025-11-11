@@ -10,6 +10,20 @@
     "continue": "Continue",
     "privacyNote": "🔒 100% Private & Secure: All processing happens locally on your device. Your files never leave your computer and are never uploaded to any server."
   },
+  "bookmark": {
+    "button": "Bookmark",
+    "title": "Bookmark This Page",
+    "description": "Save this page to your browser bookmarks for quick access to all your PDF tools.",
+    "detected": "Detected",
+    "quickTip": "Quick Keyboard Shortcut",
+    "stepsTitle": "How to Bookmark:",
+    "step1": "Press {shortcut} on your keyboard",
+    "step2": "A bookmark dialog will appear",
+    "step3": "Click 'Save' or press Enter to confirm",
+    "alternative": "Alternative",
+    "alternativeText": "Click the star icon in your {browser} address bar, or use the browser menu → Bookmarks → Bookmark This Page",
+    "gotIt": "Got It!"
+  },
   "header": {
     "title": "Mon PDF"
   },

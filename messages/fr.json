@@ -10,6 +10,20 @@
     "continue": "Continuer",
     "privacyNote": "🔒 100% Privé et Sécurisé : Tout le traitement se fait localement sur votre appareil. Vos fichiers ne quittent jamais votre ordinateur et ne sont jamais téléchargés sur un serveur."
   },
+  "bookmark": {
+    "button": "Favoris",
+    "title": "Ajouter aux Favoris",
+    "description": "Enregistrez cette page dans vos favoris pour un accès rapide à tous vos outils PDF.",
+    "detected": "Détecté",
+    "quickTip": "Raccourci Clavier Rapide",
+    "stepsTitle": "Comment ajouter aux favoris :",
+    "step1": "Appuyez sur {shortcut} sur votre clavier",
+    "step2": "Une boîte de dialogue de favoris apparaîtra",
+    "step3": "Cliquez sur 'Enregistrer' ou appuyez sur Entrée pour confirmer",
+    "alternative": "Alternative",
+    "alternativeText": "Cliquez sur l'icône étoile dans la barre d'adresse de {browser}, ou utilisez le menu du navigateur → Favoris → Ajouter cette page aux favoris",
+    "gotIt": "Compris !"
+  },
   "header": {
     "title": "Mon PDF"
   },
