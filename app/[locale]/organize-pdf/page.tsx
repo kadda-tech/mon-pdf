@@ -409,7 +409,7 @@ export default function OrganizePDFPage() {
                 <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDF files into one</li>
                 <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Split PDF</Link> - Separate a PDF into multiple files</li>
                 <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compress PDF</Link> - Reduce the size of your PDF files</li>
-                <li><Link href={`/${locale}/number-pdf`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
+                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
               </ul>
             </>
           )}

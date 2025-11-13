@@ -40,7 +40,7 @@ export default function PageNumberingPage() {
       "@type": "ListItem",
       "position": 2,
       "name": locale === 'fr' ? "Numéroter PDF" : "Number PDF",
-      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'numeroter-pdf' : 'number-pdf'}`
+      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'page-numbering' : 'number-pdf'}`
     }]
   }
 

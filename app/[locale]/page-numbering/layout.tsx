@@ -35,17 +35,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mon-pdf.fr'),
     alternates: {
-      canonical: locale === 'fr' ? '/fr/numeroter-pdf' : '/en/number-pdf',
+      canonical: locale === 'fr' ? '/fr/page-numbering' : '/en/page-numbering',
       languages: {
-        'en': '/en/number-pdf',
-        'fr': '/fr/numeroter-pdf',
-        'x-default': '/en/number-pdf',
+        'en': '/en/page-numbering',
+        'fr': '/fr/page-numbering',
+        'x-default': '/en/page-numbering',
       },
     },
     openGraph: {
       title,
       description,
-      url: locale === 'fr' ? '/fr/numeroter-pdf' : '/en/number-pdf',
+      url: locale === 'fr' ? '/fr/page-numbering' : '/en/page-numbering',
       siteName: t('header.title'),
       locale: locale,
       type: 'website',
