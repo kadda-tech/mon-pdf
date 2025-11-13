@@ -409,10 +409,6 @@ export default function MergePDFPage() {
                 <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organize PDF</Link> - Rearrange, delete, or rotate pages</li>
                 <li><Link href={`/${locale}/number-pdf`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
               </ul>
-
-              <p className="text-sm text-muted-foreground mt-8">
-                <strong>Last Updated:</strong> November 2025 | <strong>Monthly Users:</strong> Over 2 million users trust Mon PDF for their PDF merging needs
-              </p>
             </>
           )}
         </div>
