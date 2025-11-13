@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next'
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mon-pdf.fr'
   const locales = ['en', 'fr']
-  const tools = ['split', 'merge', 'organize-pdf', 'compress-pdf', 'image-to-pdf', 'ocr', 'pdf-to-images']
+  const tools = ['split', 'merge', 'organize-pdf', 'compress-pdf', 'image-to-pdf', 'ocr', 'pdf-to-images', 'page-numbering']
 
   const routes: MetadataRoute.Sitemap = []
 

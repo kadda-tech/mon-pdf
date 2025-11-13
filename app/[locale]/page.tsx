@@ -1,6 +1,6 @@
 "use client"
 
-import {Scissors, Combine, FileImage, GripVertical, FileDown, Package, SendToBack, FileText, ImageIcon} from "lucide-react"
+import {Scissors, Combine, FileImage, GripVertical, FileDown, Package, SendToBack, FileText, ImageIcon, Hash} from "lucide-react"
 import { useTranslations } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { PDFToolCard } from "@/components/pdf-tool-card"
@@ -63,6 +63,14 @@ export default function Home() {
       icon: ImageIcon,
       title: t('tools.pdfToImages.title'),
       description: t('tools.pdfToImages.description'),
+      isBeta: false,
+    },
+    {
+      id: "page-numbering",
+      path: "page-numbering",
+      icon: Hash,
+      title: t('tools.pageNumbering.title'),
+      description: t('tools.pageNumbering.description'),
       isBeta: false,
     },
     {
