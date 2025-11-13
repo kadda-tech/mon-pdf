@@ -138,49 +138,69 @@ export function PDFToWordTool() {
   }
 
   const createWordDocumentWithImages = async (pages: ExtractedPage[]): Promise<Blob> => {
+    console.log('createWordDocumentWithImages called with', pages.length, 'pages')
     const children: Paragraph[] = []
 
     for (let index = 0; index < pages.length; index++) {
       const page = pages[index]
-
-      // Add page number heading
-      children.push(
-        new Paragraph({
-          text: `Page ${page.pageNumber}`,
-          heading: HeadingLevel.HEADING_2,
-          spacing: {
-            before: index > 0 ? 400 : 0,
-            after: 200,
-          },
-        })
-      )
+      console.log(`Processing page ${page.pageNumber}, hasText: ${page.hasText}, hasCanvas: ${!!page.canvas}`)
 
       if (!page.hasText && page.canvas) {
-        // Page has scanned image, embed it as base64
-        const imageDataUrl = page.canvas.toDataURL('image/png')
-        const base64Data = imageDataUrl.split(',')[1]
-        const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0))
+        // Page has scanned image, convert to blob then to array buffer
+        console.log(`Embedding image for page ${page.pageNumber}`)
+        try {
+          // Convert canvas to data URL first
+          const dataUrl = page.canvas.toDataURL('image/png')
+          const base64Data = dataUrl.split(',')[1]
 
-        const maxWidth = 600
-        const scale = Math.min(maxWidth / (page.canvas.width / 2), 1)
-        const width = (page.canvas.width / 2) * scale
-        const height = (page.canvas.height / 2) * scale
+          // Convert base64 to binary
+          const binaryString = atob(base64Data)
+          const bytes = new Uint8Array(binaryString.length)
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i)
+          }
 
-        children.push(
-          new Paragraph({
-            children: [
-              new ImageRun({
-                data: imageBuffer,
-                transformation: {
-                  width: width,
-                  height: height,
-                },
-                type: 'png' as any,
-              }),
-            ],
-            spacing: { after: 200 },
-          })
-        )
+          // Calculate dimensions - max width 600 pixels
+          const maxWidth = 600
+          const scale = Math.min(maxWidth / page.canvas.width, 1)
+          const width = Math.round(page.canvas.width * scale)
+          const height = Math.round(page.canvas.height * scale)
+
+          console.log(`Image dimensions: ${width}x${height}, canvas: ${page.canvas.width}x${page.canvas.height}`)
+
+          children.push(
+            new Paragraph({
+              children: [
+                new ImageRun({
+                  data: bytes,
+                  transformation: {
+                    width: width,
+                    height: height,
+                  },
+                }),
+              ],
+              spacing: {
+                before: index > 0 ? 400 : 0,
+                after: 200
+              },
+            })
+          )
+          console.log(`Successfully added image for page ${page.pageNumber}`)
+        } catch (err) {
+          console.error('Failed to embed image:', err)
+          // Add a text placeholder if image fails
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `[Image from page ${page.pageNumber} could not be embedded]`,
+                  italics: true,
+                })
+              ],
+              spacing: { after: 200 },
+            })
+          )
+        }
       } else {
         // Process text content
         const paragraphs = page.text.split(/\n\n+/).filter(p => p.trim())
@@ -211,29 +231,21 @@ export function PDFToWordTool() {
       setProgress(60 + ((index + 1) / pages.length) * 40) // 60-100% for document creation
     }
 
+    console.log(`Creating Word document with ${children.length} elements`)
+
     const doc = new Document({
       sections: [{ properties: {}, children }],
     })
 
-    return await Packer.toBlob(doc)
+    const blob = await Packer.toBlob(doc)
+    console.log(`Word document created, blob size: ${blob.size} bytes`)
+    return blob
   }
 
   const createWordDocument = async (pages: ExtractedPage[]): Promise<Blob> => {
     const children: Paragraph[] = []
 
     pages.forEach((page, index) => {
-      // Add page number heading
-      children.push(
-        new Paragraph({
-          text: `Page ${page.pageNumber}`,
-          heading: HeadingLevel.HEADING_2,
-          spacing: {
-            before: index > 0 ? 400 : 0,
-            after: 200,
-          },
-        })
-      )
-
       // Process text content
       // Split by double newlines to detect paragraphs
       const paragraphs = page.text.split(/\n\n+/).filter(p => p.trim())
@@ -345,6 +357,8 @@ export function PDFToWordTool() {
 
       if (method === 'image') {
         toast.info('Creating Word document with images...')
+        console.log('Creating Word document with images, pages:', pages.length)
+        console.log('Pages with canvas:', pages.filter(p => p.canvas).length)
         blob = await createWordDocumentWithImages(pages)
       } else {
         toast.info('Creating Word document...')
@@ -483,31 +497,45 @@ export function PDFToWordTool() {
               <div className="bg-white dark:bg-slate-900 border rounded-lg p-6 max-h-[500px] overflow-y-auto">
                 <div className="space-y-4 font-serif">
                   {extractedPages.map((page, index) => {
-                    const paragraphs = page.text.split(/\n\n+/).filter(p => p.trim())
-
                     return (
                       <div key={index} className="space-y-3">
                         <h2 className="text-lg font-bold text-primary border-b pb-2">
                           Page {page.pageNumber}
                         </h2>
-                        {paragraphs.map((para, pIndex) => {
-                          const trimmedText = para.trim()
-                          if (!trimmedText) return null
 
-                          const isLikelyHeading = trimmedText.length < 100 &&
-                                                  (trimmedText === trimmedText.toUpperCase() ||
-                                                   !trimmedText.includes('.'))
+                        {!page.hasText && page.canvas ? (
+                          // Show image preview for scanned pages
+                          <div className="flex justify-center my-4">
+                            <img
+                              src={page.canvas.toDataURL('image/png')}
+                              alt={`Page ${page.pageNumber}`}
+                              className="max-w-full border rounded shadow-sm"
+                              style={{ maxHeight: '400px' }}
+                            />
+                          </div>
+                        ) : (
+                          // Show text for pages with extractable text
+                          <>
+                            {page.text.split(/\n\n+/).filter(p => p.trim()).map((para, pIndex) => {
+                              const trimmedText = para.trim()
+                              if (!trimmedText) return null
 
-                          return isLikelyHeading ? (
-                            <h3 key={pIndex} className="text-base font-bold mt-4 mb-2">
-                              {trimmedText}
-                            </h3>
-                          ) : (
-                            <p key={pIndex} className="text-sm leading-relaxed text-justify">
-                              {trimmedText}
-                            </p>
-                          )
-                        })}
+                              const isLikelyHeading = trimmedText.length < 100 &&
+                                                      (trimmedText === trimmedText.toUpperCase() ||
+                                                       !trimmedText.includes('.'))
+
+                              return isLikelyHeading ? (
+                                <h3 key={pIndex} className="text-base font-bold mt-4 mb-2">
+                                  {trimmedText}
+                                </h3>
+                              ) : (
+                                <p key={pIndex} className="text-sm leading-relaxed text-justify">
+                                  {trimmedText}
+                                </p>
+                              )
+                            })}
+                          </>
+                        )}
                       </div>
                     )
                   })}
@@ -516,7 +544,7 @@ export function PDFToWordTool() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <AlertCircle className="h-4 w-4" />
-                <span>This is a preview of the extracted text. The actual Word document has been downloaded.</span>
+                <span>This is a preview of the converted content. The actual Word document has been downloaded.</span>
               </div>
             </div>
           </CardContent>

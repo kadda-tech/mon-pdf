@@ -79,7 +79,7 @@ export default function Home() {
       icon: Scan,
       title: t('tools.scanPdf.title'),
       description: t('tools.scanPdf.description'),
-      isBeta: true,
+      isBeta: false,
     },
     {
       id: "pdf-to-word",
@@ -87,7 +87,7 @@ export default function Home() {
       icon: FileType,
       title: t('tools.pdfToWord.title'),
       description: t('tools.pdfToWord.description'),
-      isBeta: false,
+      isBeta: true,
     },
     {
       id: "ocr",
