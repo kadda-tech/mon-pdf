@@ -289,7 +289,7 @@ export default function SplitPDFPage() {
                 <li>Utilisez des noms de fichiers descriptifs pour vos documents divisés</li>
                 <li>Pour les documents volumineux, envisagez de diviser par chapitres ou sections logiques</li>
                 <li>Vérifiez que les signets et la table des matières sont préservés après la division</li>
-                <li>Combinez avec notre <Link href={`/${locale}/fusionner-pdf`} className="text-primary hover:underline">outil de fusion PDF</Link> pour réorganiser les pages si nécessaire</li>
+                <li>Combinez avec notre <Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">outil de fusion PDF</Link> pour réorganiser les pages si nécessaire</li>
               </ul>
 
               <h3>Foire Aux Questions (FAQ)</h3>
@@ -327,10 +327,10 @@ export default function SplitPDFPage() {
               <h3>Outils PDF Connexes</h3>
               <p>Découvrez nos autres outils PDF gratuits :</p>
               <ul>
-                <li><Link href={`/${locale}/fusionner-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combinez plusieurs fichiers PDF en un seul</li>
+                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combinez plusieurs fichiers PDF en un seul</li>
                 <li><Link href={`/${locale}/comprimer-pdf`} className="text-primary hover:underline">Comprimer PDF</Link> - Réduisez la taille de vos fichiers PDF</li>
-                <li><Link href={`/${locale}/organiser-pdf`} className="text-primary hover:underline">Organiser PDF</Link> - Réorganisez, supprimez ou faites pivoter les pages</li>
-                <li><Link href={`/${locale}/numeroter-pdf`} className="text-primary hover:underline">Numéroter PDF</Link> - Ajoutez des numéros de page à vos documents</li>
+                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organiser PDF</Link> - Réorganisez, supprimez ou faites pivoter les pages</li>
+                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Numéroter PDF</Link> - Ajoutez des numéros de page à vos documents</li>
               </ul>
 
             </>
@@ -386,7 +386,7 @@ export default function SplitPDFPage() {
                 <li>Use descriptive file names for your split documents</li>
                 <li>For large documents, consider splitting by chapters or logical sections</li>
                 <li>Verify that bookmarks and table of contents are preserved after splitting</li>
-                <li>Combine with our <Link href={`/${locale}/merge`} className="text-primary hover:underline">merge PDF tool</Link> to rearrange pages if needed</li>
+                <li>Combine with our <Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">merge PDF tool</Link> to rearrange pages if needed</li>
               </ul>
 
               <h3>Frequently Asked Questions (FAQ)</h3>

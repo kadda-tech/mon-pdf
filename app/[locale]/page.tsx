@@ -20,7 +20,7 @@ export default function Home() {
   const tools = [
     {
       id: "split",
-      path: "split",
+      path: "split-pdf",
       icon: Scissors,
       title: t('tools.split.title'),
       description: t('tools.split.description'),
@@ -28,7 +28,7 @@ export default function Home() {
     },
     {
       id: "merge",
-      path: "merge",
+      path: "merge-pdf",
       icon: Combine,
       title: t('tools.merge.title'),
       description: t('tools.merge.description'),

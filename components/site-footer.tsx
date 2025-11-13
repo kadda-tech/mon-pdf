@@ -21,7 +21,7 @@ export function SiteFooter({ locale }: SiteFooterProps) {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href={`/${locale}/split`}
+                  href={`/${locale}/split-pdf`}
                   className="text-yellow-500 hover:text-yellow-300 transition-colors text-sm"
                 >
                   {t('tools.split.title')}
@@ -29,7 +29,7 @@ export function SiteFooter({ locale }: SiteFooterProps) {
               </li>
               <li>
                 <Link
-                  href={`/${locale}/merge`}
+                  href={`/${locale}/merge-pdf`}
                   className="text-yellow-500 hover:text-yellow-300 transition-colors text-sm"
                 >
                   {t('tools.merge.title')}
