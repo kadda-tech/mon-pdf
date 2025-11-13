@@ -24,14 +24,26 @@ export default function MobileScanPageClient({ params }: { params: Promise<{ ses
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // Check if session exists via API
+  // Check if session exists via API with retry logic
   useEffect(() => {
+    let retryCount = 0
+    const maxRetries = 5
+    const retryDelay = 1000 // 1 second
+
     const checkSession = async () => {
       try {
         const response = await fetch(`/api/scan/${sessionId}`)
         const data = await response.json()
 
         if (!data.success) {
+          // Retry if session not found and we haven't exceeded max retries
+          if (retryCount < maxRetries) {
+            retryCount++
+            console.log(`Session not found, retrying... (${retryCount}/${maxRetries})`)
+            setTimeout(checkSession, retryDelay)
+            return
+          }
+
           setError('Session not found. Please scan the QR code again.')
           return
         }
@@ -40,6 +52,15 @@ export default function MobileScanPageClient({ params }: { params: Promise<{ ses
         setConnected(true)
       } catch (err) {
         console.error('Error checking session:', err)
+
+        // Retry on network errors too
+        if (retryCount < maxRetries) {
+          retryCount++
+          console.log(`Connection error, retrying... (${retryCount}/${maxRetries})`)
+          setTimeout(checkSession, retryDelay)
+          return
+        }
+
         setError('Failed to connect to session')
       }
     }
