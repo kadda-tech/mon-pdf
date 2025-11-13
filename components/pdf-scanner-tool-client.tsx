@@ -37,6 +37,49 @@ export function PDFScannerToolClient() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [lastCheckTime, setLastCheckTime] = useState<number>(Date.now())
 
+  // Check for existing session from URL params (mobile return flow)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const existingSessionId = params.get('session')
+
+    if (existingSessionId) {
+      // Restore existing session
+      setSessionId(existingSessionId)
+      toast.success('Session restored', {
+        description: 'Your scanned pages are ready',
+      })
+
+      // Generate QR code for the session (in case user wants to continue scanning)
+      const locale = window.location.pathname.split('/')[1] || 'en'
+      const scanUrl = `${window.location.origin}/${locale}/scan/${existingSessionId}`
+
+      QRCode.toDataURL(scanUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF',
+        },
+      })
+      .then((url) => {
+        setQrCodeUrl(url)
+      })
+      .catch((err) => {
+        console.error('QR code generation error:', err)
+      })
+
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+  }, [])
+
+  // Check if user is on mobile device
+  const isMobileDevice = () => {
+    if (typeof window === 'undefined') return false
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+           (window.innerWidth <= 768)
+  }
+
   // Generate unique session ID via API
   const startScanning = async () => {
     try {
@@ -52,19 +95,26 @@ export function PDFScannerToolClient() {
       }
 
       const id = data.sessionId
-      setSessionId(id)
-
-      // Generate QR code with locale
       const locale = window.location.pathname.split('/')[1] || 'en'
       const scanUrl = `${window.location.origin}/${locale}/scan/${id}`
+
+      // If user is on mobile, redirect directly to scan page
+      if (isMobileDevice()) {
+        window.location.href = scanUrl
+        return
+      }
+
+      // Otherwise, show QR code for desktop users
+      setSessionId(id)
+
       QRCode.toDataURL(scanUrl, {
-      width: 300,
-      margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#FFFFFF',
-      },
-    })
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF',
+        },
+      })
       .then((url) => {
         setQrCodeUrl(url)
         toast.success('Scan session started', {
@@ -282,6 +332,20 @@ export function PDFScannerToolClient() {
                     </>
                   )}
                 </Button>
+
+                {isMobileDevice() && (
+                  <Button
+                    onClick={() => {
+                      const locale = window.location.pathname.split('/')[1] || 'en'
+                      window.location.href = `${window.location.origin}/${locale}/scan/${sessionId}`
+                    }}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Continue Scanning
+                  </Button>
+                )}
 
                 <Button onClick={resetSession} variant="outline" className="w-full">
                   <Trash2 className="mr-2 h-4 w-4" />

@@ -1,6 +1,7 @@
 "use client"
 
 import { use, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -10,12 +11,16 @@ import {
   Trash2,
   X,
   AlertCircle,
-  CheckCircle, RefreshCcw
+  CheckCircle,
+  RefreshCcw,
+  ArrowLeft,
+  Check
 } from 'lucide-react'
 import { toast } from 'sonner'
 
 export default function MobileScanPageClient({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params)
+  const router = useRouter()
   const [capturing, setCapturing] = useState(false)
   const [images, setImages] = useState<string[]>([])
   const [stream, setStream] = useState<MediaStream | null>(null)
@@ -188,6 +193,17 @@ export default function MobileScanPageClient({ params }: { params: Promise<{ ses
     }
   }
 
+  const handleDone = () => {
+    // Stop camera stream before navigating
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+    }
+
+    // Navigate back to scan page with session ID in URL params
+    const locale = window.location.pathname.split('/')[1] || 'en'
+    router.push(`/${locale}/scan-pdf?session=${sessionId}`)
+  }
+
   if (error) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -244,7 +260,18 @@ export default function MobileScanPageClient({ params }: { params: Promise<{ ses
               <CheckCircle className="h-5 w-5 text-green-500" />
               <span className="font-medium">Connected</span>
             </div>
-            <Badge variant="secondary">{images.length} pages</Badge>
+            <div className="flex items-center gap-3">
+              <Badge variant="secondary">{images.length} pages</Badge>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleDone}
+                className="gap-1"
+              >
+                <Check className="h-4 w-4" />
+                Done
+              </Button>
+            </div>
           </div>
         </div>
 
