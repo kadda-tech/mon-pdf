@@ -123,11 +123,21 @@ export function SiteFooter({ locale }: SiteFooterProps) {
           {/* About Column */}
           <div>
             <h3 className="text-yellow-400 font-semibold mb-4 text-lg">Mon PDF</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
               {locale === 'fr'
                 ? 'Outils PDF gratuits en ligne. 100% sécurisé, traitement côté client.'
                 : 'Free online PDF tools. 100% secure, client-side processing.'}
             </p>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href={`/${locale}/blog`}
+                  className="text-yellow-500 hover:text-yellow-300 transition-colors text-sm"
+                >
+                  {locale === 'fr' ? 'Blog' : 'Blog'}
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 

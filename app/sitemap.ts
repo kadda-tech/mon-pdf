@@ -16,6 +16,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'scan-pdf',
   ]
 
+  const blogArticles = [
+    'how-to-merge-pdf-online-free',
+  ]
+
   const routes: MetadataRoute.Sitemap = []
 
   // Homepage for each locale
@@ -45,6 +49,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
         alternates: {
           languages: locales.reduce((acc, l) => {
             if (l !== locale) acc[l] = `${baseUrl}/${l}/${tool}`
+            return acc
+          }, {} as Record<string, string>)
+        }
+      })
+    })
+  })
+
+  // Blog pages for each locale
+  locales.forEach((locale) => {
+    // Blog index page
+    routes.push({
+      url: `${baseUrl}/${locale}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+      alternates: {
+        languages: locales.reduce((acc, l) => {
+          if (l !== locale) acc[l] = `${baseUrl}/${l}/blog`
+          return acc
+        }, {} as Record<string, string>)
+      }
+    })
+
+    // Blog articles
+    blogArticles.forEach((article) => {
+      routes.push({
+        url: `${baseUrl}/${locale}/blog/${article}`,
+        lastModified: new Date('2025-11-14'),
+        changeFrequency: 'monthly',
+        priority: 0.9,  // High priority for SEO-optimized content
+        alternates: {
+          languages: locales.reduce((acc, l) => {
+            if (l !== locale) acc[l] = `${baseUrl}/${l}/blog/${article}`
             return acc
           }, {} as Record<string, string>)
         }
