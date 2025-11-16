@@ -267,10 +267,10 @@ export default function PDFToWordPage() {
 
               <h3>Limitations et Notes</h3>
               <ul>
-                <li><strong>Images</strong> - Les images ne sont pas incluses dans la conversion</li>
-                <li><strong>Tableaux Complexes</strong> - Peuvent nécessiter une restructuration manuelle</li>
-                <li><strong>Polices</strong> - Utilise des polices standard dans le document Word</li>
-                <li><strong>Mise en Page</strong> - Les mises en page très complexes peuvent être simplifiées</li>
+                <li><strong>Images</strong> - Les images sont automatiquement extraites et incluses dans la conversion</li>
+                <li><strong>Tableaux</strong> - Détectés automatiquement et convertis avec structure préservée</li>
+                <li><strong>Polices</strong> - Les polices originales sont préservées quand possible</li>
+                <li><strong>Formatage</strong> - Les tailles de police, gras et styles sont conservés</li>
                 <li><strong>Formulaires</strong> - Les champs de formulaire ne sont pas convertis</li>
               </ul>
 
@@ -358,10 +358,10 @@ export default function PDFToWordPage() {
 
               <h3>Limitations and Notes</h3>
               <ul>
-                <li><strong>Images</strong> - Images are not included in conversion</li>
-                <li><strong>Complex Tables</strong> - May require manual restructuring</li>
-                <li><strong>Fonts</strong> - Uses standard fonts in Word document</li>
-                <li><strong>Layout</strong> - Very complex layouts may be simplified</li>
+                <li><strong>Images</strong> - Images are automatically extracted and included in conversion</li>
+                <li><strong>Tables</strong> - Automatically detected and converted with preserved structure</li>
+                <li><strong>Fonts</strong> - Original fonts are preserved when possible</li>
+                <li><strong>Formatting</strong> - Font sizes, bold, and styles are retained</li>
                 <li><strong>Forms</strong> - Form fields are not converted</li>
               </ul>
 
