@@ -35,17 +35,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mon-pdf.fr'),
     alternates: {
-      canonical: locale === 'fr' ? '/fr/diviser-pdf' : '/en/split-pdf',
+      canonical: locale === 'fr' ? '/fr/split-pdf' : '/en/split-pdf',
       languages: {
         'en': '/en/split-pdf',
-        'fr': '/fr/diviser-pdf',
+        'fr': '/fr/split-pdf',
         'x-default': '/en/split-pdf',
       },
     },
     openGraph: {
       title,
       description,
-      url: locale === 'fr' ? '/fr/diviser-pdf' : '/en/split-pdf',
+      url: locale === 'fr' ? '/fr/split-pdf' : '/en/split-pdf',
       siteName: t('header.title'),
       locale: locale,
       type: 'website',

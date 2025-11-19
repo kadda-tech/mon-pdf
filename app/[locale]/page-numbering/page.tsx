@@ -177,7 +177,7 @@ export default function PageNumberingPage() {
                 <img
                   src="/logo.png"
                   alt={locale === 'fr'
-                    ? 'Mon PDF - Outils PDF Gratuits en Ligne - Fusionner, Diviser, Comprimer PDF'
+                    ? 'Mon PDF - Outils PDF Gratuits en Ligne - Fusionner, Diviser, compresser PDF'
                     : 'Mon PDF - Free Online PDF Tools - Merge, Split, Compress PDF'
                   }
                   className="h-30 w-30"
@@ -329,7 +329,7 @@ export default function PageNumberingPage() {
                 <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combinez plusieurs fichiers PDF en un seul</li>
                 <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Diviser PDF</Link> - Séparez un PDF en plusieurs fichiers</li>
                 <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organiser PDF</Link> - Réorganisez, supprimez ou faites pivoter les pages</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Comprimer PDF</Link> - Réduisez la taille de vos fichiers PDF</li>
+                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">compresser PDF</Link> - Réduisez la taille de vos fichiers PDF</li>
               </ul>
             </>
           ) : (

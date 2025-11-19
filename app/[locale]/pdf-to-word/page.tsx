@@ -50,7 +50,7 @@ export default function PDFToWordPage() {
       "@type": "ListItem",
       "position": 2,
       "name": locale === 'fr' ? "PDF vers Word" : "PDF to Word",
-      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'pdf-vers-word' : 'pdf-to-word'}`
+      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'pdf-to-word' : 'pdf-to-word'}`
     }]
   }
 

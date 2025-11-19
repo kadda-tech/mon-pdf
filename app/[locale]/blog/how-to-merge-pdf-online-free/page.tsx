@@ -449,7 +449,7 @@ export default function MergePDFGuidePage() {
                       sans problème. Pour les très
                       gros fichiers, envisagez d'abord de les <Link href={`/${locale}/compress-pdf`}
                                                                     className="text-primary hover:underline">
-                      comprimer</Link>.
+                      compresser</Link>.
                     </p>
 
                     <h3>L'outil fonctionne-t-il sur mobile ?</h3>
@@ -525,7 +525,7 @@ export default function MergePDFGuidePage() {
                           {' '}- Séparez un document PDF en plusieurs fichiers ou extrayez des pages spécifiques
                         </li>
                         <li>
-                          <Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline font-semibold">Comprimer
+                          <Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline font-semibold">compresser
                             PDF</Link>
                           {' '}- Réduisez la taille de vos fichiers PDF sans perte de qualité visible
                         </li>

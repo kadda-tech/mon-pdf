@@ -17,7 +17,7 @@ const nextConfig = {
         destination: '/fr/scan-pdf',
       },
       {
-        source: '/fr/pdf-vers-word',
+        source: '/fr/pdf-to-word',
         destination: '/fr/pdf-to-word',
       },
     ];

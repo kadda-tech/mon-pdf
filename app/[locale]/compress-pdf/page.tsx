@@ -177,7 +177,7 @@ export default function CompressPDFPage() {
                 <img
                   src="/logo.png"
                   alt={locale === 'fr'
-                    ? 'Mon PDF - Outils PDF Gratuits en Ligne - Fusionner, Diviser, Comprimer PDF'
+                    ? 'Mon PDF - Outils PDF Gratuits en Ligne - Fusionner, Diviser, compresser PDF'
                     : 'Mon PDF - Free Online PDF Tools - Merge, Split, Compress PDF'
                   }
                   className="h-30 w-30"

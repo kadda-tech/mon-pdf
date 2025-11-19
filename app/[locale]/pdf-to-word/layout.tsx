@@ -35,17 +35,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mon-pdf.fr'),
     alternates: {
-      canonical: locale === 'fr' ? '/fr/pdf-vers-word' : '/en/pdf-to-word',
+      canonical: locale === 'fr' ? '/fr/pdf-to-word' : '/en/pdf-to-word',
       languages: {
         'en': '/en/pdf-to-word',
-        'fr': '/fr/pdf-vers-word',
+        'fr': '/fr/pdf-to-word',
         'x-default': '/en/pdf-to-word',
       },
     },
     openGraph: {
       title,
       description,
-      url: locale === 'fr' ? '/fr/pdf-vers-word' : '/en/pdf-to-word',
+      url: locale === 'fr' ? '/fr/pdf-to-word' : '/en/pdf-to-word',
       siteName: t('header.title'),
       locale: locale,
       type: 'website',
