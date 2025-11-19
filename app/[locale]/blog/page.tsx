@@ -17,6 +17,19 @@ export default function BlogPage() {
 
   const articles = [
     {
+      slug: 'how-to-convert-pdf-to-word',
+      title: locale === 'fr'
+        ? 'Comment Convertir un PDF en Word Gratuitement : Guide Complet 2025'
+        : 'How to Convert PDF to Word Free: Complete Guide 2025',
+      description: locale === 'fr'
+        ? 'Découvrez comment convertir vos fichiers PDF en documents Word (DOCX) éditables en ligne gratuitement. Guide étape par étape avec les meilleures pratiques.'
+        : 'Learn how to convert your PDF files to editable Word (DOCX) documents online for free. Step-by-step guide with best practices.',
+      date: locale === 'fr' ? '20 Novembre 2025' : 'November 20, 2025',
+      readTime: locale === 'fr' ? '6 min de lecture' : '6 min read',
+      category: locale === 'fr' ? 'Tutoriels' : 'Tutorials',
+      image: '/blog/pdf-to-word.png'
+    },
+    {
       slug: 'how-to-scan-documents-to-pdf',
       title: locale === 'fr'
         ? 'Comment Scanner des Documents en PDF : Guide Complet 2025'
