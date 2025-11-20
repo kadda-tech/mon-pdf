@@ -1,14 +1,28 @@
 "use client"
 
 import { useTranslations } from 'next-intl'
-import { PDFOrganizeTool } from "@/components/pdf-organize-tool"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from 'next/navigation'
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { BookmarkButton } from "@/components/bookmark-button"
 import Link from 'next/link'
 import Script from 'next/script'
-import {SiteFooter} from "@/components/site-footer";
+import {SiteFooter} from "@/components/site-footer"
+import { Loader2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+// Lazy load the PDFOrganizeTool to avoid SSR issues with pdf.js
+const PDFOrganizeTool = dynamic(() => import("@/components/pdf-organize-tool").then(mod => ({ default: mod.PDFOrganizeTool })), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-2" />
+        <p className="text-sm text-muted-foreground">Loading tool...</p>
+      </div>
+    </div>
+  )
+})
 
 export default function OrganizePDFPage() {
   const t = useTranslations()
