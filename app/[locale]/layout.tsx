@@ -39,18 +39,8 @@ export default async function LocaleLayout({
   return (
       <html lang={locale}>
       <head>
-        {/* SEO Meta Tags */}
-        <meta name="description" content="Merge, split, compress, and convert PDF files online for free and securely." />
-        <link rel="canonical" href={canonicalUrl} />
-        {locales.map((l) => (
-            <link key={l} rel="alternate" hrefLang={l} href={`${baseUrl}/${l}`} />
-        ))}
-
-        {/* Open Graph */}
-        <meta property="og:title" content="Mon PDF - Merge PDF Online" />
-        <meta property="og:description" content="Combine your PDFs securely and quickly with our free online tool." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonicalUrl} />
+        {/* Canonical tags and meta descriptions are handled by child layout metadata */}
+        {/* Only keep alternate language links here for the homepage */}
 
         {/* Google Tag Manager */}
         <Script id="gtm" strategy="afterInteractive">
