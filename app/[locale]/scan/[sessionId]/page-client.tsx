@@ -225,18 +225,16 @@ export default function MobileScanPageClient({ params }: { params: Promise<{ ses
   }
 
   return (
-      <div className="relative min-h-screen bg-black">
+      <div className="relative h-screen w-screen bg-black overflow-hidden">
         {/* Full-screen video */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="relative w-full h-full max-h-screen overflow-hidden bg-black">
-            <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="absolute inset-0 w-full h-full object-cover"
-            />
-          </div>
+        <div className="absolute inset-0">
+          <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="absolute inset-0 w-full h-full object-cover"
+          />
           {/* Overlay frame */}
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <div className="border-2 border-white/40 rounded-xl w-[85%] h-[70%]" />
