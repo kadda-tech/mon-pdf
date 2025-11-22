@@ -1,16 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { PDFDocument } from "pdf-lib"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { FileUploadZone } from "@/components/file-upload-zone"
-import { useAppDispatch, useAppSelector } from "@/lib/hooks"
-import { addFiles, setProcessing } from "@/lib/features/pdf-slice"
-import { Scissors, Download, CheckSquare, Square } from "lucide-react"
-import { Card } from "@/components/ui/card"
-import { PDFPageSelector } from "@/components/pdf-page-selector"
+import {useState} from "react"
+import {PDFDocument} from "pdf-lib"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Label} from "@/components/ui/label"
+import {FileUploadZone} from "@/components/file-upload-zone"
+import {useAppDispatch, useAppSelector} from "@/lib/hooks"
+import {addFiles, clearFiles, setProcessing} from "@/lib/features/pdf-slice"
+import {CheckSquare, Download, Scissors, Square} from "lucide-react"
+import {Card} from "@/components/ui/card"
+import {PDFPageSelector} from "@/components/pdf-page-selector"
 
 export function PDFSplitTool() {
   const dispatch = useAppDispatch()
@@ -19,6 +19,9 @@ export function PDFSplitTool() {
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set())
 
   const handleFilesSelected = async (fileList: FileList) => {
+    // Clear existing files first since this tool only handles one file at a time
+    dispatch(clearFiles())
+
     const newFiles = await Promise.all(
       Array.from(fileList).map(async (file) => {
         const arrayBuffer = await file.arrayBuffer()
@@ -35,6 +38,7 @@ export function PDFSplitTool() {
     )
     dispatch(addFiles(newFiles))
     setSelectedPages(new Set()) // Reset selection when new file is uploaded
+    setPageRange("") // Reset page range when new file is uploaded
   }
 
   const handlePageToggle = (pageNumber: number) => {
@@ -159,7 +163,7 @@ export function PDFSplitTool() {
       {files.length > 0 && (
         <>
           <Card className="p-6 space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <p className="text-sm font-medium">
                   {files[0].name} ({files[0].pages} pages)

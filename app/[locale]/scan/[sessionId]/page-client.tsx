@@ -1,22 +1,12 @@
 "use client"
 
-import { use, useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import {
-  Camera,
-  Loader2,
-  Trash2,
-  X,
-  AlertCircle,
-  CheckCircle,
-  RefreshCcw,
-  ArrowLeft,
-  Check
-} from 'lucide-react'
-import { toast } from 'sonner'
+import {use, useEffect, useRef, useState} from 'react'
+import {useRouter} from 'next/navigation'
+import {Button} from "@/components/ui/button"
+import {Card, CardContent} from "@/components/ui/card"
+import {Badge} from "@/components/ui/badge"
+import {AlertCircle, Camera, Check, CheckCircle, Loader2} from 'lucide-react'
+import {toast} from 'sonner'
 
 export default function MobileScanPageClient({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params)
@@ -238,13 +228,15 @@ export default function MobileScanPageClient({ params }: { params: Promise<{ ses
       <div className="relative min-h-screen bg-black">
         {/* Full-screen video */}
         <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-          <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-contain bg-black"
-          />
+          <div className="relative w-full h-full max-h-screen overflow-hidden bg-black">
+            <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="absolute inset-0 w-full h-full object-cover"
+            />
+          </div>
           {/* Overlay frame */}
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <div className="border-2 border-white/40 rounded-xl w-[85%] h-[70%]" />
