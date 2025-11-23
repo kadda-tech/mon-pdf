@@ -1,15 +1,17 @@
 "use client"
 
+import { useTranslations } from 'next-intl'
 import { PDFDocument } from "pdf-lib"
+import { Combine, Download } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FileUploadZone } from "@/components/file-upload-zone"
 import { FileList } from "@/components/file-list"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { addFiles, removeFile, setProcessing, clearFiles } from "@/lib/features/pdf-slice"
-import { Combine, Download } from "lucide-react"
-import { Card } from "@/components/ui/card"
 
 export function PDFMergeTool() {
+  const t = useTranslations()
   const dispatch = useAppDispatch()
   const { files, processing } = useAppSelector((state) => state.pdf)
 
@@ -64,35 +66,36 @@ export function PDFMergeTool() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 bg-accent/50 border-2">
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-background">
-            <Combine className="h-6 w-6" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Merge PDFs</h2>
-            <p className="text-sm text-muted-foreground">
-              Combine multiple PDF files into one document. Files will be merged in the order they appear.
-            </p>
-          </div>
-        </div>
-      </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Combine className="h-6 w-6" />
+          {t('tools.merge.heading')}
+        </CardTitle>
+        <CardDescription>{t('tools.merge.intro')}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {files.length === 0 ? (
+          <FileUploadZone onFilesSelected={handleFilesSelected} accept=".pdf" multiple={true} type="pdf" />
+        ) : (
+          <>
+            <FileUploadZone onFilesSelected={handleFilesSelected} accept=".pdf" multiple={true} type="pdf" />
 
-      <FileUploadZone onFilesSelected={handleFilesSelected} accept=".pdf" multiple={true} type="pdf" />
-
-      {files.length >= 2 && (
-        <Button onClick={handleMerge} disabled={processing} className="w-full" size="lg">
-          {processing ? (
-            "Processing..."
-          ) : (
-            <>
-              <Download className="mr-2 h-4 w-4" />
-              Merge {files.length} PDFs
-            </>
-          )}
-        </Button>
-      )}
-    </div>
+            {files.length >= 2 && (
+              <Button onClick={handleMerge} disabled={processing} className="w-full" size="lg">
+                {processing ? (
+                  t('common.processing')
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Merge {files.length} PDFs
+                  </>
+                )}
+              </Button>
+            )}
+          </>
+        )}
+      </CardContent>
+    </Card>
   )
 }

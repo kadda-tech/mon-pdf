@@ -1,15 +1,17 @@
 "use client"
 
 import { PDFDocument } from "pdf-lib"
+import { useTranslations } from 'next-intl'
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileUploadZone } from "@/components/file-upload-zone"
 import { FileList } from "@/components/file-list"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { addFiles, removeFile, setProcessing, clearFiles } from "@/lib/features/pdf-slice"
 import { FileImage, Download } from "lucide-react"
-import { Card } from "@/components/ui/card"
 
 export function ImageToPDFTool() {
+  const t = useTranslations()
   const dispatch = useAppDispatch()
   const { files, processing } = useAppSelector((state) => state.pdf)
 
@@ -80,43 +82,38 @@ export function ImageToPDFTool() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 bg-accent/50 border-2">
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-background">
-            <FileImage className="h-6 w-6" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Image to PDF</h2>
-            <p className="text-sm text-muted-foreground">
-              Convert your images (PNG, JPG) into a single PDF document. Each image becomes a page.
-            </p>
-          </div>
-        </div>
-      </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <FileImage className="h-6 w-6" />
+          {t('tools.imageToPdf.heading')}
+        </CardTitle>
+        <CardDescription>{t('tools.imageToPdf.intro')}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <FileUploadZone onFilesSelected={handleFilesSelected} accept=".png,.jpg,.jpeg" multiple={true} type="image" />
 
-      <FileUploadZone onFilesSelected={handleFilesSelected} accept=".png,.jpg,.jpeg" multiple={true} type="image" />
+        <FileList
+          files={files}
+          selectedFiles={[]}
+          onRemove={(id) => dispatch(removeFile(id))}
+          onToggleSelect={() => {}}
+          selectable={false}
+        />
 
-      <FileList
-        files={files}
-        selectedFiles={[]}
-        onRemove={(id) => dispatch(removeFile(id))}
-        onToggleSelect={() => {}}
-        selectable={false}
-      />
-
-      {files.length > 0 && (
-        <Button onClick={handleConvert} disabled={processing} className="w-full" size="lg">
-          {processing ? (
-            "Processing..."
-          ) : (
-            <>
-              <Download className="mr-2 h-4 w-4" />
-              Convert {files.length} Image{files.length > 1 ? "s" : ""} to PDF
-            </>
-          )}
-        </Button>
-      )}
-    </div>
+        {files.length > 0 && (
+          <Button onClick={handleConvert} disabled={processing} className="w-full" size="lg">
+            {processing ? (
+              t('tools.imageToPdf.converting')
+            ) : (
+              <>
+                <Download className="mr-2 h-4 w-4" />
+                {t('tools.imageToPdf.convertAll')}
+              </>
+            )}
+          </Button>
+        )}
+      </CardContent>
+    </Card>
   )
 }

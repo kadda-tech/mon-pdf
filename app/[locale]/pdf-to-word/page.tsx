@@ -1,21 +1,32 @@
 "use client"
 
 import {useTranslations} from 'next-intl'
-import {usePathname, useRouter} from 'next/navigation'
+import {usePathname} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
 import {SiteFooter} from "@/components/site-footer"
 import dynamic from 'next/dynamic'
+import {Clock, FileType, Shield, Zap} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 // Lazy load the PDFToWordTool to avoid SSR issues with pdf.js
 const PDFToWordTool = dynamic(() => import("@/components/pdf-to-word-tool").then(mod => ({ default: mod.PDFToWordTool })), {
   ssr: false,
-  loading: () => null // Remove loading state to prevent LCP delay
+  loading: () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="h-12 w-12 rounded-full border-4 border-purple-200 dark:border-purple-800 border-t-purple-600 dark:border-t-purple-400 animate-spin" />
+          <FileType className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-purple-600 dark:text-purple-400" />
+        </div>
+        <p className="text-sm text-muted-foreground">Loading PDF to Word Converter...</p>
+      </div>
+    </div>
+  )
 })
 
 export default function PDFToWordPage() {
   const t = useTranslations()
-  const router = useRouter()
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'en'
 
@@ -24,7 +35,10 @@ export default function PDFToWordPage() {
     "@type": "Organization",
     "name": "Mon PDF",
     "url": "https://mon-pdf.fr",
-    "logo": "https://mon-pdf.fr/logo.png"
+    "logo": "https://mon-pdf.fr/logo.png",
+    "description": locale === 'fr'
+      ? "Outils PDF en ligne gratuits et sécurisés"
+      : "Free and secure online PDF tools"
   }
 
   const breadcrumbSchema = {
@@ -47,6 +61,9 @@ export default function PDFToWordPage() {
     "@context": "https://schema.org",
     "@type": "HowTo",
     "name": locale === 'fr' ? "Comment convertir un PDF en Word" : "How to Convert PDF to Word",
+    "description": locale === 'fr'
+      ? "Guide étape par étape pour convertir un fichier PDF en document Word"
+      : "Step-by-step guide to convert a PDF file to Word document",
     "step": [
       {
         "@type": "HowToStep",
@@ -137,6 +154,7 @@ export default function PDFToWordPage() {
 
   return (
     <>
+      {/* Structured Data */}
       <Script id="organization-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(organizationSchema)}
       </Script>
@@ -153,228 +171,136 @@ export default function PDFToWordPage() {
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-violet-500/5 dark:bg-violet-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <FileType className="h-4 w-4 text-purple-600" />
                 {locale === 'fr' ? 'PDF vers Word' : 'PDF to Word'}
               </li>
             </ol>
           </nav>
 
-          
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-violet-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-purple-500 to-violet-500 shadow-2xl">
+                  <FileType className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
 
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Convertir PDF en Word - PDF vers DOCX Gratuit'
-                : 'Convert PDF to Word - PDF to DOCX Free'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Extraire texte de PDF en document Word éditable. Conversion rapide et gratuite.'
-                : 'Extract text from PDF to editable Word document. Fast and free conversion.'}
-            </p>
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Convertir PDF en Word'
+                    : 'Convert PDF to Word'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Transformez vos PDF en documents Word éditables en quelques secondes. Extraction de texte rapide et gratuite.'
+                    : 'Transform your PDFs into editable Word documents in seconds. Fast and free text extraction.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <PDFToWordTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-purple-500/10 dark:shadow-purple-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFToWordTool />
+              </div>
+            </Card>
+          </div>
 
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Convertir PDF en Word - Outil Gratuit</h2>
-              <p>
-                Notre convertisseur PDF vers Word vous permet de transformer vos documents PDF en fichiers DOCX éditables.
-                Extrayez le texte de vos PDF pour pouvoir les modifier dans Microsoft Word, Google Docs ou tout autre
-                traitement de texte. Notre outil traite tout localement dans votre navigateur pour une confidentialité totale.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Glissez-déposez votre fichier PDF ou cliquez pour le sélectionner'
+                    : 'Drag and drop your PDF file or click to select it',
+                  icon: '📄'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Convertissez' : 'Convert',
+                  description: locale === 'fr'
+                    ? 'Cliquez sur convertir pour extraire le texte et créer le document Word'
+                    : 'Click convert to extract text and create the Word document',
+                  icon: '⚡'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre document Word éditable instantanément'
+                    : 'Get your editable Word document instantly',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-purple-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-purple-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Convertir un PDF en Word</h3>
-              <ol>
-                <li><strong>Téléchargez votre PDF</strong> - Sélectionnez le fichier à convertir</li>
-                <li><strong>Lancez la conversion</strong> - Cliquez sur "Convertir en Word"</li>
-                <li><strong>Téléchargez le DOCX</strong> - Obtenez votre document Word éditable</li>
-              </ol>
-
-              <h3>Avantages de Notre Convertisseur</h3>
-              <ul>
-                <li><strong>Texte Éditable</strong> - Modifiez le contenu extrait dans Word</li>
-                <li><strong>Structure Préservée</strong> - Les paragraphes et sections sont maintenus</li>
-                <li><strong>Format DOCX</strong> - Compatible avec tous les traitements de texte</li>
-                <li><strong>100% Gratuit</strong> - Aucune limite, aucune inscription</li>
-                <li><strong>Traitement Local</strong> - Vos fichiers restent privés</li>
-                <li><strong>Rapide</strong> - Conversion en quelques secondes</li>
-              </ul>
-
-              <h3>Cas d'Utilisation</h3>
-              <ul>
-                <li><strong>Éditer des PDF</strong> - Convertir pour modifier le contenu</li>
-                <li><strong>Extraire du Texte</strong> - Récupérer le texte de documents PDF</li>
-                <li><strong>Réutiliser du Contenu</strong> - Adapter du contenu PDF pour d'autres usages</li>
-                <li><strong>Corriger des Documents</strong> - Éditer et corriger des PDF</li>
-                <li><strong>Reformater</strong> - Changer la mise en page dans Word</li>
-                <li><strong>Traduction</strong> - Faciliter la traduction de documents</li>
-              </ul>
-
-              <h3>Formats Supportés</h3>
-              <ul>
-                <li><strong>Entrée</strong> - Fichiers PDF avec texte extractible</li>
-                <li><strong>Sortie</strong> - Documents Word DOCX (Office 2007+)</li>
-                <li><strong>Compatibilité</strong> - Microsoft Word, Google Docs, LibreOffice</li>
-              </ul>
-
-              <h3>Conseils pour Meilleurs Résultats</h3>
-              <ul>
-                <li><strong>PDF avec Texte</strong> - Fonctionne mieux avec des PDF contenant du texte sélectionnable</li>
-                <li><strong>PDF Scannés</strong> - Utilisez d'abord notre outil OCR pour les PDF scannés</li>
-                <li><strong>Mise en Page Simple</strong> - Les documents avec mise en page simple convertissent mieux</li>
-                <li><strong>Révision Manuelle</strong> - Vérifiez le formatage après conversion</li>
-                <li><strong>Tableaux Complexes</strong> - Peuvent nécessiter des ajustements manuels</li>
-              </ul>
-
-              <h3>Limitations et Notes</h3>
-              <ul>
-                <li><strong>Images</strong> - Les images sont automatiquement extraites et incluses dans la conversion</li>
-                <li><strong>Tableaux</strong> - Détectés automatiquement et convertis avec structure préservée</li>
-                <li><strong>Polices</strong> - Les polices originales sont préservées quand possible</li>
-                <li><strong>Formatage</strong> - Les tailles de police, gras et styles sont conservés</li>
-                <li><strong>Formulaires</strong> - Les champs de formulaire ne sont pas convertis</li>
-              </ul>
-
-              <h3>Foire Aux Questions</h3>
-
-              <h4>Comment convertir un PDF en Word ?</h4>
-              <p>
-                Téléchargez votre fichier PDF, cliquez sur le bouton "Convertir en Word", et notre outil extraira
-                automatiquement le texte pour créer un document Word éditable au format DOCX que vous pourrez télécharger
-                et ouvrir dans n'importe quel traitement de texte.
-              </p>
-
-              <h4>Le formatage est-il préservé ?</h4>
-              <p>
-                Le texte et la structure de base (paragraphes, sections) sont préservés. Les titres sont détectés
-                automatiquement. Cependant, les mises en page très complexes (tableaux élaborés, colonnes multiples)
-                peuvent nécessiter des ajustements manuels après la conversion.
-              </p>
-
-              <h4>Puis-je éditer le document Word après conversion ?</h4>
-              <p>
-                Oui, absolument ! Le fichier DOCX généré est entièrement éditable dans Microsoft Word, Google Docs,
-                LibreOffice Writer, ou tout autre traitement de texte compatible avec le format DOCX. Vous pouvez
-                modifier le texte, changer le formatage, ajouter ou supprimer du contenu librement.
-              </p>
-
-              <h3>Outils Connexes</h3>
-              <ul>
-                <li><Link href={`/${locale}/ocr`} className="text-primary hover:underline">OCR PDF</Link> - Extraire texte de PDF scannés</li>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combiner plusieurs PDF</li>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Diviser PDF</Link> - Séparer un PDF</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Convert PDF to Word - Free Tool</h2>
-              <p>
-                Our PDF to Word converter allows you to transform your PDF documents into editable DOCX files.
-                Extract text from your PDFs to edit them in Microsoft Word, Google Docs, or any other word processor.
-                Our tool processes everything locally in your browser for complete privacy.
-              </p>
-
-              <h3>How to Convert PDF to Word</h3>
-              <ol>
-                <li><strong>Upload your PDF</strong> - Select the file to convert</li>
-                <li><strong>Start conversion</strong> - Click "Convert to Word"</li>
-                <li><strong>Download DOCX</strong> - Get your editable Word document</li>
-              </ol>
-
-              <h3>Benefits of Our Converter</h3>
-              <ul>
-                <li><strong>Editable Text</strong> - Modify the extracted content in Word</li>
-                <li><strong>Preserved Structure</strong> - Paragraphs and sections are maintained</li>
-                <li><strong>DOCX Format</strong> - Compatible with all word processors</li>
-                <li><strong>100% Free</strong> - No limits, no registration</li>
-                <li><strong>Local Processing</strong> - Your files stay private</li>
-                <li><strong>Fast</strong> - Conversion in seconds</li>
-              </ul>
-
-              <h3>Use Cases</h3>
-              <ul>
-                <li><strong>Edit PDFs</strong> - Convert to modify content</li>
-                <li><strong>Extract Text</strong> - Retrieve text from PDF documents</li>
-                <li><strong>Reuse Content</strong> - Adapt PDF content for other uses</li>
-                <li><strong>Correct Documents</strong> - Edit and correct PDFs</li>
-                <li><strong>Reformat</strong> - Change layout in Word</li>
-                <li><strong>Translation</strong> - Facilitate document translation</li>
-              </ul>
-
-              <h3>Supported Formats</h3>
-              <ul>
-                <li><strong>Input</strong> - PDF files with extractable text</li>
-                <li><strong>Output</strong> - Word DOCX documents (Office 2007+)</li>
-                <li><strong>Compatibility</strong> - Microsoft Word, Google Docs, LibreOffice</li>
-              </ul>
-
-              <h3>Tips for Best Results</h3>
-              <ul>
-                <li><strong>Text-based PDFs</strong> - Works best with PDFs containing selectable text</li>
-                <li><strong>Scanned PDFs</strong> - Use our OCR tool first for scanned PDFs</li>
-                <li><strong>Simple Layout</strong> - Documents with simple layout convert better</li>
-                <li><strong>Manual Review</strong> - Check formatting after conversion</li>
-                <li><strong>Complex Tables</strong> - May require manual adjustments</li>
-              </ul>
-
-              <h3>Limitations and Notes</h3>
-              <ul>
-                <li><strong>Images</strong> - Images are automatically extracted and included in conversion</li>
-                <li><strong>Tables</strong> - Automatically detected and converted with preserved structure</li>
-                <li><strong>Fonts</strong> - Original fonts are preserved when possible</li>
-                <li><strong>Formatting</strong> - Font sizes, bold, and styles are retained</li>
-                <li><strong>Forms</strong> - Form fields are not converted</li>
-              </ul>
-
-              <h3>Frequently Asked Questions</h3>
-
-              <h4>How to convert PDF to Word?</h4>
-              <p>
-                Upload your PDF file, click the "Convert to Word" button, and our tool will automatically extract
-                the text to create an editable Word document in DOCX format that you can download and open in
-                any word processor.
-              </p>
-
-              <h4>Is formatting preserved?</h4>
-              <p>
-                Text and basic structure (paragraphs, sections) are preserved. Headings are automatically detected.
-                However, very complex layouts (elaborate tables, multiple columns) may require manual adjustments
-                after conversion.
-              </p>
-
-              <h4>Can I edit the Word document after conversion?</h4>
-              <p>
-                Yes, absolutely! The generated DOCX file is fully editable in Microsoft Word, Google Docs,
-                LibreOffice Writer, or any other word processor compatible with the DOCX format. You can modify
-                text, change formatting, and add or remove content freely.
-              </p>
-
-              <h3>Related Tools</h3>
-              <ul>
-                <li><Link href={`/${locale}/ocr`} className="text-primary hover:underline">OCR PDF</Link> - Extract text from scanned PDFs</li>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDFs</li>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Split PDF</Link> - Separate a PDF</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

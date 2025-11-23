@@ -179,6 +179,10 @@
     "pdfToWord": {
       "title": "PDF vers Word",
       "description": "Convertir PDF en document Word éditable (DOCX)",
+      "heading": "Convertisseur PDF vers Word",
+      "intro": "Convertissez vos documents PDF en format Word (DOCX) éditable tout en préservant le formatage, les images et les tableaux",
+      "convertButton": "Convertir en Word",
+      "converting": "Conversion en cours...",
       "scannedDialogTitle": "Images numérisées détectées",
       "scannedDialogDescription": "Votre PDF contient {count} page(s) avec des images numérisées (aucun texte extractible). Comment souhaitez-vous traiter ces pages ?",
       "keepImagesTitle": "Conserver les images",

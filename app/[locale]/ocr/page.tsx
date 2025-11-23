@@ -5,7 +5,9 @@ import {PDFOCRTool} from "@/components/ocr/pdf-ocr-tool"
 import {usePathname, useRouter} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
-import {SiteFooter} from "@/components/site-footer";
+import {SiteFooter} from "@/components/site-footer"
+import {Clock, FileText, Shield, Sparkles} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 export default function OCRPage() {
   const t = useTranslations()
@@ -131,272 +133,153 @@ export default function OCRPage() {
 
   return (
     <>
-      <Script id="organization-schema" type="application/ld+json">
+      {/* Structured Data */}
+      <Script id="organization-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(organizationSchema)}
       </Script>
-      <Script id="breadcrumb-schema" type="application/ld+json">
+      <Script id="breadcrumb-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(breadcrumbSchema)}
       </Script>
-      <Script id="howto-schema" type="application/ld+json">
+      <Script id="howto-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(howToSchema)}
       </Script>
-      <Script id="software-schema" type="application/ld+json">
+      <Script id="software-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(softwareSchema)}
       </Script>
-      <Script id="faq-schema" type="application/ld+json">
+      <Script id="faq-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-orange-500/5 dark:bg-orange-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <FileText className="h-4 w-4 text-orange-600" />
                 OCR PDF
               </li>
             </ol>
           </nav>
 
-          
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-500 to-amber-500 shadow-2xl">
+                  <FileText className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
 
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'OCR PDF Gratuit - Extraire Texte de PDF Scanné'
-                : 'OCR PDF Free - Extract Text from Scanned PDF'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Reconnaissance optique de caractères. Convertissez PDF scanné en texte modifiable. 100% gratuit.'
-                : 'Optical character recognition. Convert scanned PDF to editable text. 100% free.'}
-            </p>
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'OCR PDF Gratuit - Extraire Texte'
+                    : 'OCR PDF Free - Extract Text'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Reconnaissance optique de caractères. Convertissez PDF scanné en texte modifiable en quelques secondes.'
+                    : 'Optical character recognition. Convert scanned PDF to editable text in seconds.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-orange-500/10 border border-orange-500/20 px-4 py-2">
+                  <Sparkles className="h-4 w-4 text-orange-600" />
+                  <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                    {locale === 'fr' ? 'IA Avancée' : 'Advanced AI'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-6xl mx-auto">
-            <PDFOCRTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFOCRTool />
+              </div>
+            </Card>
           </div>
 
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>OCR PDF en Ligne - Outil Gratuit</h2>
-              <p>
-                Notre outil OCR (Reconnaissance Optique de Caractères) vous permet d'extraire du texte de documents PDF scannés, d'images
-                et de photos. Transformez vos documents numérisés en texte modifiable, copiable et recherchable. Notre technologie OCR
-                avancée reconnaît le texte avec précision, détecte les tableaux et préserve la mise en page. Tout le traitement est effectué
-                localement dans votre navigateur pour une confidentialité totale.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Glissez-déposez votre PDF scanné ou image'
+                    : 'Drag and drop your scanned PDF or image',
+                  icon: '📄'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Analysez' : 'Analyze',
+                  description: locale === 'fr'
+                    ? 'L\'IA reconnaît automatiquement le texte'
+                    : 'AI automatically recognizes the text',
+                  icon: '🔍'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Copiez' : 'Copy',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre texte modifiable instantanément'
+                    : 'Get your editable text instantly',
+                  icon: '📋'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-orange-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-orange-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Utiliser l'OCR sur un PDF</h3>
-              <ol>
-                <li><strong>Télécharger le PDF scanné</strong> - Sélectionnez votre document PDF ou image</li>
-                <li><strong>Lancer l'analyse OCR</strong> - L'outil reconnaît automatiquement le texte</li>
-                <li><strong>Copier ou télécharger</strong> - Récupérez le texte extrait et modifiable</li>
-              </ol>
-
-              <h3>Fonctionnalités OCR Avancées</h3>
-              <ul>
-                <li><strong>Reconnaissance Multi-Langues</strong> - Supporte français, anglais et nombreuses langues</li>
-                <li><strong>Détection de Tableaux</strong> - Identifie et extrait les tableaux avec structure</li>
-                <li><strong>Préservation de Mise en Page</strong> - Conserve l'organisation du document</li>
-                <li><strong>Haute Précision</strong> - Technologie OCR de pointe pour résultats fiables</li>
-                <li><strong>Texte Copiable</strong> - Copiez directement le texte extrait</li>
-                <li><strong>Export Texte</strong> - Téléchargez le texte en format TXT</li>
-              </ul>
-
-              <h3>Cas d'Utilisation de l'OCR</h3>
-              <ul>
-                <li><strong>Documents Scannés</strong> - Convertir scans papier en texte modifiable</li>
-                <li><strong>Factures et Reçus</strong> - Extraire données de factures scannées</li>
-                <li><strong>Livres et Articles</strong> - Numériser pages de livres en texte</li>
-                <li><strong>Formulaires</strong> - Extraire informations de formulaires remplis</li>
-                <li><strong>Contrats</strong> - Rendre contrats scannés modifiables et recherchables</li>
-                <li><strong>Notes Manuscrites</strong> - Convertir notes manuscrites lisibles en texte</li>
-              </ul>
-
-              <h3>Avantages de Notre OCR PDF</h3>
-              <ul>
-                <li><strong>100% Gratuit</strong> - Aucune limite d'utilisation, aucune inscription</li>
-                <li><strong>Traitement Local</strong> - Vos documents restent privés, pas de serveur</li>
-                <li><strong>Multi-Format</strong> - Fonctionne avec PDF, JPG, PNG et autres images</li>
-                <li><strong>Rapide et Précis</strong> - Résultats en quelques secondes</li>
-                <li><strong>Interface Simple</strong> - Facile à utiliser, pas de configuration</li>
-                <li><strong>Multi-Pages</strong> - Traite plusieurs pages à la fois</li>
-              </ul>
-
-              <h3>Types de Documents Supportés</h3>
-              <ul>
-                <li><strong>PDF Scannés</strong> - Documents numérisés au format PDF</li>
-                <li><strong>Photos de Documents</strong> - Images de documents prises au téléphone</li>
-                <li><strong>Captures d'Écran</strong> - Screenshots contenant du texte</li>
-                <li><strong>Images JPG/PNG</strong> - Tous formats d'image standard</li>
-                <li><strong>Formulaires Scannés</strong> - Formulaires papier numérisés</li>
-              </ul>
-
-              <h3>Conseils pour Meilleure Reconnaissance OCR</h3>
-              <ul>
-                <li><strong>Qualité d'Image</strong> - Utilisez des scans haute résolution (300 DPI min.)</li>
-                <li><strong>Bon Contraste</strong> - Texte noir sur fond blanc donne meilleurs résultats</li>
-                <li><strong>Document Droit</strong> - Assurez-vous que le document est bien aligné</li>
-                <li><strong>Netteté</strong> - Évitez les images floues ou mal focalisées</li>
-                <li><strong>Éclairage Uniforme</strong> - Scannez sans ombres ni reflets</li>
-              </ul>
-
-              <h3>OCR vs Copier-Coller</h3>
-              <ul>
-                <li><strong>Documents Images</strong> - OCR fonctionne sur images, pas copier-coller</li>
-                <li><strong>PDF Scannés</strong> - OCR nécessaire pour PDF sans couche texte</li>
-                <li><strong>Photos</strong> - OCR extrait texte de photos de documents</li>
-                <li><strong>Tableaux</strong> - OCR préserve structure des tableaux</li>
-                <li><strong>Mise en Page</strong> - OCR maintient organisation du document</li>
-              </ul>
-
-              <h3>Foire Aux Questions</h3>
-
-              <h4>Qu'est-ce que l'OCR PDF ?</h4>
-              <p>
-                L'OCR (Reconnaissance Optique de Caractères) est une technologie qui analyse les images de texte dans vos PDF
-                et les convertit en texte réellement modifiable et copiable. Notre outil utilise l'intelligence artificielle
-                pour reconnaître avec précision les caractères, même dans des documents complexes avec tableaux et mise en page spéciale.
-              </p>
-
-              <h4>L'OCR fonctionne-t-il sur tous les PDF ?</h4>
-              <p>
-                Notre OCR fonctionne sur les PDF scannés, images de documents, et photos de texte. La qualité du résultat
-                dépend de la clarté du document original. Les documents nets, bien éclairés et avec un bon contraste donnent
-                les meilleurs résultats. Les documents très flous ou de mauvaise qualité peuvent avoir une reconnaissance moins précise.
-              </p>
-
-              <h4>Puis-je détecter des tableaux avec l'OCR ?</h4>
-              <p>
-                Oui, notre outil OCR avancé peut détecter et extraire les tableaux des PDF scannés. Il analyse la structure
-                du document pour identifier les lignes et colonnes, préservant l'organisation des données. Cela facilite
-                l'utilisation des informations extraites dans Excel, Google Sheets ou d'autres applications.
-              </p>
-
-              <h3>Outils Connexes</h3>
-              <ul>
-                <li><Link href={`/${locale}/scanner-pdf`} className="text-primary hover:underline">Scanner PDF</Link> - Numériser documents en PDF</li>
-                <li><Link href={`/${locale}/pdf-to-images`} className="text-primary hover:underline">PDF vers Images</Link> - Convertir PDF en images</li>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combiner plusieurs PDF</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Online PDF OCR - Free Tool</h2>
-              <p>
-                Our OCR (Optical Character Recognition) tool allows you to extract text from scanned PDF documents, images,
-                and photos. Transform your digitized documents into editable, copyable, and searchable text. Our advanced OCR
-                technology recognizes text accurately, detects tables, and preserves layout. All processing is done locally
-                in your browser for complete privacy.
-              </p>
-
-              <h3>How to Use OCR on PDF</h3>
-              <ol>
-                <li><strong>Upload scanned PDF</strong> - Select your PDF document or image</li>
-                <li><strong>Start OCR analysis</strong> - Tool automatically recognizes text</li>
-                <li><strong>Copy or download</strong> - Get extracted and editable text</li>
-              </ol>
-
-              <h3>Advanced OCR Features</h3>
-              <ul>
-                <li><strong>Multi-Language Recognition</strong> - Supports French, English and many languages</li>
-                <li><strong>Table Detection</strong> - Identifies and extracts tables with structure</li>
-                <li><strong>Layout Preservation</strong> - Maintains document organization</li>
-                <li><strong>High Accuracy</strong> - State-of-the-art OCR technology for reliable results</li>
-                <li><strong>Copyable Text</strong> - Directly copy extracted text</li>
-                <li><strong>Text Export</strong> - Download text in TXT format</li>
-              </ul>
-
-              <h3>OCR Use Cases</h3>
-              <ul>
-                <li><strong>Scanned Documents</strong> - Convert paper scans to editable text</li>
-                <li><strong>Invoices and Receipts</strong> - Extract data from scanned invoices</li>
-                <li><strong>Books and Articles</strong> - Digitize book pages to text</li>
-                <li><strong>Forms</strong> - Extract information from filled forms</li>
-                <li><strong>Contracts</strong> - Make scanned contracts editable and searchable</li>
-                <li><strong>Handwritten Notes</strong> - Convert readable handwritten notes to text</li>
-              </ul>
-
-              <h3>Benefits of Our PDF OCR</h3>
-              <ul>
-                <li><strong>100% Free</strong> - No usage limits, no registration</li>
-                <li><strong>Local Processing</strong> - Your documents stay private, no server</li>
-                <li><strong>Multi-Format</strong> - Works with PDF, JPG, PNG and other images</li>
-                <li><strong>Fast and Accurate</strong> - Results in seconds</li>
-                <li><strong>Simple Interface</strong> - Easy to use, no configuration</li>
-                <li><strong>Multi-Page</strong> - Processes multiple pages at once</li>
-              </ul>
-
-              <h3>Supported Document Types</h3>
-              <ul>
-                <li><strong>Scanned PDFs</strong> - Digitized documents in PDF format</li>
-                <li><strong>Document Photos</strong> - Images of documents taken by phone</li>
-                <li><strong>Screenshots</strong> - Screenshots containing text</li>
-                <li><strong>JPG/PNG Images</strong> - All standard image formats</li>
-                <li><strong>Scanned Forms</strong> - Digitized paper forms</li>
-              </ul>
-
-              <h3>Tips for Better OCR Recognition</h3>
-              <ul>
-                <li><strong>Image Quality</strong> - Use high-resolution scans (300 DPI min.)</li>
-                <li><strong>Good Contrast</strong> - Black text on white background gives best results</li>
-                <li><strong>Straight Document</strong> - Ensure document is properly aligned</li>
-                <li><strong>Sharpness</strong> - Avoid blurry or poorly focused images</li>
-                <li><strong>Even Lighting</strong> - Scan without shadows or reflections</li>
-              </ul>
-
-              <h3>OCR vs Copy-Paste</h3>
-              <ul>
-                <li><strong>Image Documents</strong> - OCR works on images, not copy-paste</li>
-                <li><strong>Scanned PDFs</strong> - OCR needed for PDFs without text layer</li>
-                <li><strong>Photos</strong> - OCR extracts text from document photos</li>
-                <li><strong>Tables</strong> - OCR preserves table structure</li>
-                <li><strong>Layout</strong> - OCR maintains document organization</li>
-              </ul>
-
-              <h3>Frequently Asked Questions</h3>
-
-              <h4>What is PDF OCR?</h4>
-              <p>
-                OCR (Optical Character Recognition) is a technology that analyzes text images in your PDFs and converts
-                them into truly editable and copyable text. Our tool uses artificial intelligence to accurately recognize
-                characters, even in complex documents with tables and special layouts.
-              </p>
-
-              <h4>Does OCR work on all PDFs?</h4>
-              <p>
-                Our OCR works on scanned PDFs, document images, and text photos. Result quality depends on the original
-                document's clarity. Clear, well-lit documents with good contrast give the best results. Very blurry or
-                poor quality documents may have less accurate recognition.
-              </p>
-
-              <h4>Can I detect tables with OCR?</h4>
-              <p>
-                Yes, our advanced OCR tool can detect and extract tables from scanned PDFs. It analyzes document structure
-                to identify rows and columns, preserving data organization. This makes it easier to use extracted information
-                in Excel, Google Sheets, or other applications.
-              </p>
-
-              <h3>Related Tools</h3>
-              <ul>
-                <li><Link href={`/${locale}/scan-pdf`} className="text-primary hover:underline">Scan PDF</Link> - Digitize documents to PDF</li>
-                <li><Link href={`/${locale}/pdf-to-images`} className="text-primary hover:underline">PDF to Images</Link> - Convert PDF to images</li>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDFs</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

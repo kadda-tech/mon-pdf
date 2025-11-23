@@ -1,3 +1,4 @@
+import {SiteHeader} from "@/components/site-header"
 import { getTranslations } from 'next-intl/server'
 import { Metadata } from 'next'
 
@@ -86,5 +87,10 @@ export default function CompressPDFLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <>{children}</>
+  return (
+    <>
+      <SiteHeader />
+      {children}
+    </>
+  )
 }

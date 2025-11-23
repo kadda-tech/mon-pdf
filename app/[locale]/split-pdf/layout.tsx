@@ -1,3 +1,4 @@
+import {SiteHeader} from "@/components/site-header"
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 
@@ -83,5 +84,10 @@ export default function SplitLayout({
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return (
+    <>
+      <SiteHeader />
+      {children}
+    </>
+  )
 }

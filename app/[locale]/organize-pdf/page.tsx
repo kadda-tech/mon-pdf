@@ -6,11 +6,23 @@ import Link from 'next/link'
 import Script from 'next/script'
 import {SiteFooter} from "@/components/site-footer"
 import dynamic from 'next/dynamic'
+import {Clock, SendToBack, Shield, Sparkles, Zap} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 // Lazy load the PDFOrganizeTool to avoid SSR issues with pdf.js
 const PDFOrganizeTool = dynamic(() => import("@/components/pdf-organize-tool").then(mod => ({ default: mod.PDFOrganizeTool })), {
   ssr: false,
-  loading: () => null // Remove loading state to prevent LCP delay
+  loading: () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="h-12 w-12 rounded-full border-4 border-teal-200 dark:border-teal-800 border-t-teal-600 dark:border-t-teal-400 animate-spin" />
+          <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-teal-600 dark:text-teal-400" />
+        </div>
+        <p className="text-sm text-muted-foreground">Loading PDF Organizer...</p>
+      </div>
+    </div>
+  )
 })
 
 export default function OrganizePDFPage() {
@@ -172,225 +184,136 @@ export default function OrganizePDFPage() {
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
-          {/* Breadcrumbs for SEO */}
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-teal-500/5 dark:bg-teal-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/5 dark:bg-cyan-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <SendToBack className="h-4 w-4 text-teal-600" />
                 {locale === 'fr' ? 'Organiser PDF' : 'Organize PDF'}
               </li>
             </ol>
           </nav>
 
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-teal-500 to-cyan-500 shadow-2xl">
+                  <SendToBack className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
 
-          {/* H1 with primary keyword */}
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Organiser un PDF en Ligne - Réorganiser Pages PDF Gratuitement'
-                : 'Organize PDF Online - Rearrange PDF Pages for Free'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Réorganisez, supprimez, faites pivoter ou dupliquez des pages PDF. 100% gratuit, sécurisé et privé.'
-                : 'Rearrange, delete, rotate, or duplicate PDF pages. 100% free, secure, and private.'}
-            </p>
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Organiser un PDF en Ligne'
+                    : 'Organize PDF Pages Online'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Réorganisez, supprimez, faites pivoter ou dupliquez des pages PDF. 100% gratuit, sécurisé et privé.'
+                    : 'Rearrange, delete, rotate, or duplicate PDF pages. 100% free, secure, and private.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-teal-500/10 border border-teal-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-teal-600" />
+                  <span className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-cyan-600" />
+                  <span className="text-sm font-medium text-cyan-700 dark:text-cyan-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-6xl mx-auto">
-            <PDFOrganizeTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-teal-500/10 dark:shadow-teal-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFOrganizeTool />
+              </div>
+            </Card>
           </div>
 
-        {/* SEO Content */}
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Organiser un PDF en Ligne - Outil Gratuit et Sécurisé</h2>
-              <p>
-                Notre outil d'organisation PDF en ligne vous permet de réorganiser, supprimer, faire pivoter ou dupliquer des pages PDF en quelques clics.
-                Que vous ayez besoin de corriger l'ordre des pages, de supprimer des pages inutiles ou de faire pivoter des pages mal orientées,
-                notre outil gratuit traite tous vos fichiers localement dans votre navigateur, garantissant une confidentialité totale.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Glissez-déposez votre fichier PDF ou cliquez pour le sélectionner'
+                    : 'Drag and drop your PDF file or click to select it',
+                  icon: '📄'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Organisez' : 'Organize',
+                  description: locale === 'fr'
+                    ? 'Réorganisez, supprimez ou faites pivoter les pages selon vos besoins'
+                    : 'Rearrange, delete, or rotate pages as needed',
+                  icon: '🔄'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre PDF organisé instantanément'
+                    : 'Get your organized PDF instantly',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-teal-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-teal-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Organiser un PDF en 3 Étapes Simples</h3>
-              <ol>
-                <li><strong>Téléchargez votre fichier PDF</strong> - Glissez-déposez ou cliquez pour sélectionner le PDF à organiser</li>
-                <li><strong>Réorganisez les pages</strong> - Faites glisser les pages pour les réorganiser, supprimez ou faites pivoter les pages</li>
-                <li><strong>Téléchargez le PDF organisé</strong> - Cliquez sur télécharger pour obtenir votre PDF réorganisé</li>
-              </ol>
-
-              <h3>Fonctionnalités d'Organisation PDF</h3>
-              <ul>
-                <li><strong>Réorganiser les Pages</strong> - Glissez-déposez les pages dans l'ordre souhaité par simple glissement</li>
-                <li><strong>Supprimer des Pages</strong> - Supprimez les pages inutiles ou indésirables en un clic</li>
-                <li><strong>Faire Pivoter les Pages</strong> - Corrigez l'orientation des pages à 90°, 180° ou 270°</li>
-                <li><strong>Dupliquer des Pages</strong> - Créez des copies de pages spécifiques</li>
-                <li><strong>100% Gratuit</strong> - Aucun frais caché, aucune inscription requise</li>
-                <li><strong>Totalement Sécurisé</strong> - Vos fichiers restent sur votre appareil, traitement local uniquement</li>
-              </ul>
-
-              <h3>Cas d'Utilisation pour Organiser des PDF</h3>
-              <p>Notre outil d'organisation PDF est parfait pour :</p>
-              <ul>
-                <li><strong>Corriger l'Ordre des Pages</strong> - Réorganisez les pages qui ont été scannées ou fusionnées dans le mauvais ordre</li>
-                <li><strong>Pages Scannées</strong> - Faites pivoter les pages scannées dans la mauvaise orientation</li>
-                <li><strong>Supprimer Pages Vierges</strong> - Éliminez les pages blanches ou inutiles d'un document</li>
-                <li><strong>Créer des Présentations</strong> - Réorganisez les diapositives pour une meilleure présentation</li>
-                <li><strong>Préparer des Documents</strong> - Organisez les pages avant de fusionner ou de partager</li>
-                <li><strong>Formulaires et Contrats</strong> - Réorganisez les sections de documents légaux ou de formulaires</li>
-              </ul>
-
-              <h3>Conseils pour Organiser Efficacement vos PDF</h3>
-              <ul>
-                <li>Prévisualisez toutes les pages avant de réorganiser pour identifier les changements nécessaires</li>
-                <li>Utilisez la fonction de rotation pour corriger les pages scannées mal orientées</li>
-                <li>Supprimez les pages vierges pour réduire la taille du fichier final</li>
-                <li>Dupliquez les pages qui doivent apparaître plusieurs fois dans le document</li>
-                <li>Organisez avant de fusionner plusieurs PDF pour un meilleur flux de document</li>
-              </ul>
-
-              <h3>Foire Aux Questions (FAQ)</h3>
-
-              <h4>Comment réorganiser les pages d'un PDF ?</h4>
-              <p>
-                Téléchargez votre PDF, puis faites simplement glisser les pages dans l'ordre souhaité. Vous pouvez également
-                supprimer, pivoter ou dupliquer des pages selon vos besoins. Toutes les modifications se font en temps réel
-                dans l'aperçu.
-              </p>
-
-              <h4>Puis-je faire pivoter des pages individuelles ?</h4>
-              <p>
-                Oui, notre outil vous permet de faire pivoter chaque page individuellement à 90°, 180° ou 270°. C'est parfait
-                pour corriger l'orientation des pages scannées ou des images insérées dans le mauvais sens.
-              </p>
-
-              <h4>Les modifications sont-elles permanentes ?</h4>
-              <p>
-                Les modifications sont appliquées au fichier téléchargé. Votre PDF original reste intact sur votre appareil
-                jusqu'à ce que vous téléchargiez la version organisée. Vous pouvez toujours recommencer si nécessaire.
-              </p>
-
-              <h4>Puis-je supprimer plusieurs pages à la fois ?</h4>
-              <p>
-                Oui, vous pouvez sélectionner et supprimer plusieurs pages simultanément. Cela facilite le nettoyage
-                des documents avec de nombreuses pages inutiles.
-              </p>
-
-              <h4>Y a-t-il une limite au nombre de pages ?</h4>
-              <p>
-                Non, vous pouvez organiser des PDF de n'importe quelle taille. La seule limite est la mémoire de votre appareil.
-                Notre outil gère efficacement les documents avec des centaines de pages.
-              </p>
-
-              <h3>Outils PDF Connexes</h3>
-              <p>Découvrez nos autres outils PDF gratuits :</p>
-              <ul>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combinez plusieurs fichiers PDF en un seul</li>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Diviser PDF</Link> - Séparez un PDF en plusieurs fichiers</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">compresser PDF</Link> - Réduisez la taille de vos fichiers PDF</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Numéroter PDF</Link> - Ajoutez des numéros de page à vos documents</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Organize PDF Online - Free and Secure Tool</h2>
-              <p>
-                Our online PDF organizer tool allows you to rearrange, delete, rotate, or duplicate PDF pages in just a few clicks.
-                Whether you need to fix page order, remove unnecessary pages, or rotate misaligned pages,
-                our free tool processes all your files locally in your browser, ensuring complete privacy.
-              </p>
-
-              <h3>How to Organize a PDF in 3 Simple Steps</h3>
-              <ol>
-                <li><strong>Upload your PDF file</strong> - Drag and drop or click to select the PDF to organize</li>
-                <li><strong>Rearrange pages</strong> - Drag pages to reorder, delete or rotate pages as needed</li>
-                <li><strong>Download organized PDF</strong> - Click download to get your reorganized PDF</li>
-              </ol>
-
-              <h3>PDF Organization Features</h3>
-              <ul>
-                <li><strong>Rearrange Pages</strong> - Drag and drop pages into your desired order with simple dragging</li>
-                <li><strong>Delete Pages</strong> - Remove unnecessary or unwanted pages with one click</li>
-                <li><strong>Rotate Pages</strong> - Fix page orientation by 90°, 180°, or 270°</li>
-                <li><strong>Duplicate Pages</strong> - Create copies of specific pages</li>
-                <li><strong>100% Free</strong> - No hidden fees, no registration required</li>
-                <li><strong>Completely Secure</strong> - Your files stay on your device, local processing only</li>
-              </ul>
-
-              <h3>Use Cases for Organizing PDFs</h3>
-              <p>Our PDF organization tool is perfect for:</p>
-              <ul>
-                <li><strong>Fix Page Order</strong> - Rearrange pages that were scanned or merged in the wrong order</li>
-                <li><strong>Scanned Pages</strong> - Rotate pages scanned in the wrong orientation</li>
-                <li><strong>Remove Blank Pages</strong> - Eliminate blank or unnecessary pages from a document</li>
-                <li><strong>Create Presentations</strong> - Rearrange slides for better presentation flow</li>
-                <li><strong>Prepare Documents</strong> - Organize pages before merging or sharing</li>
-                <li><strong>Forms and Contracts</strong> - Rearrange sections of legal documents or forms</li>
-              </ul>
-
-              <h3>Tips for Organizing PDFs Effectively</h3>
-              <ul>
-                <li>Preview all pages before rearranging to identify necessary changes</li>
-                <li>Use the rotate function to fix misaligned scanned pages</li>
-                <li>Delete blank pages to reduce final file size</li>
-                <li>Duplicate pages that need to appear multiple times in the document</li>
-                <li>Organize before merging multiple PDFs for better document flow</li>
-              </ul>
-
-              <h3>Frequently Asked Questions (FAQ)</h3>
-
-              <h4>How do I rearrange PDF pages?</h4>
-              <p>
-                Upload your PDF, then simply drag pages into your desired order. You can also delete, rotate, or duplicate
-                pages as needed. All changes happen in real-time in the preview.
-              </p>
-
-              <h4>Can I rotate individual pages?</h4>
-              <p>
-                Yes, our tool allows you to rotate each page individually by 90°, 180°, or 270°. This is perfect for
-                fixing orientation of scanned pages or images inserted in the wrong direction.
-              </p>
-
-              <h4>Are the changes permanent?</h4>
-              <p>
-                Changes are applied to the downloaded file. Your original PDF remains intact on your device until you
-                download the organized version. You can always start over if needed.
-              </p>
-
-              <h4>Can I delete multiple pages at once?</h4>
-              <p>
-                Yes, you can select and delete multiple pages simultaneously. This makes it easy to clean up
-                documents with many unnecessary pages.
-              </p>
-
-              <h4>Is there a limit on the number of pages?</h4>
-              <p>
-                No, you can organize PDFs of any size. The only limit is your device's memory. Our tool efficiently
-                handles documents with hundreds of pages.
-              </p>
-
-              <h3>Related PDF Tools</h3>
-              <p>Explore our other free PDF tools:</p>
-              <ul>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDF files into one</li>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Split PDF</Link> - Separate a PDF into multiple files</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compress PDF</Link> - Reduce the size of your PDF files</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

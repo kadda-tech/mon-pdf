@@ -1,18 +1,20 @@
 "use client"
 
 import {useState} from "react"
+import {useTranslations} from 'next-intl'
 import {PDFDocument} from "pdf-lib"
 import {Button} from "@/components/ui/button"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {FileUploadZone} from "@/components/file-upload-zone"
 import {useAppDispatch, useAppSelector} from "@/lib/hooks"
 import {addFiles, clearFiles, setProcessing} from "@/lib/features/pdf-slice"
 import {CheckSquare, Download, Scissors, Square} from "lucide-react"
-import {Card} from "@/components/ui/card"
 import {PDFPageSelector} from "@/components/pdf-page-selector"
 
 export function PDFSplitTool() {
+  const t = useTranslations()
   const dispatch = useAppDispatch()
   const { files, processing } = useAppSelector((state) => state.pdf)
   const [pageRange, setPageRange] = useState<string>("")
@@ -143,96 +145,91 @@ export function PDFSplitTool() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 bg-accent/50 border-2">
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-xl bg-background">
-            <Scissors className="h-6 w-6" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Split PDF</h2>
-            <p className="text-sm text-muted-foreground">
-              Extract specific pages from your PDF by selecting them visually or using page ranges
-            </p>
-          </div>
-        </div>
-      </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Scissors className="h-6 w-6" />
+          {t('tools.split.heading')}
+        </CardTitle>
+        <CardDescription>{t('tools.split.intro')}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <FileUploadZone onFilesSelected={handleFilesSelected} accept=".pdf" multiple={false} type="pdf" />
 
-      <FileUploadZone onFilesSelected={handleFilesSelected} accept=".pdf" multiple={false} type="pdf" />
-
-      {files.length > 0 && (
-        <>
-          <Card className="p-6 space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <p className="text-sm font-medium">
-                  {files[0].name} ({files[0].pages} pages)
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {selectedPages.size > 0
-                    ? `${selectedPages.size} page${selectedPages.size !== 1 ? "s" : ""} selected`
-                    : "Select pages by clicking on them"}
-                </p>
+        {files.length > 0 && (
+          <>
+            <Card className="p-6 space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <p className="text-sm font-medium">
+                    {files[0].name} ({files[0].pages} {t('tools.split.pages')})
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {selectedPages.size > 0
+                      ? t('tools.split.pagesSelected', { count: selectedPages.size })
+                      : t('tools.split.selectPages')}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleSelectAll} variant="outline" size="sm">
+                    <CheckSquare className="mr-2 h-4 w-4" />
+                    {t('common.selectAll')}
+                  </Button>
+                  <Button onClick={handleDeselectAll} variant="outline" size="sm">
+                    <Square className="mr-2 h-4 w-4" />
+                    {t('common.deselectAll')}
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button onClick={handleSelectAll} variant="outline" size="sm">
-                  <CheckSquare className="mr-2 h-4 w-4" />
-                  Select All
+            </Card>
+
+            <PDFPageSelector
+              file={files[0].file}
+              selectedPages={selectedPages}
+              onPageToggle={handlePageToggle}
+            />
+
+            {selectedPages.size > 0 && (
+              <Card className="p-6 space-y-4 sticky bottom-4 shadow-lg">
+                <Button onClick={handleDownloadSelected} disabled={processing} className="w-full" size="lg">
+                  {processing ? (
+                    t('common.processing')
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      {t('tools.split.downloadSelected')}
+                    </>
+                  )}
                 </Button>
-                <Button onClick={handleDeselectAll} variant="outline" size="sm">
-                  <Square className="mr-2 h-4 w-4" />
-                  Deselect All
-                </Button>
+              </Card>
+            )}
+
+            <Card className="p-6 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="pageRange">{t('tools.split.orUseRange')}</Label>
+                <Input
+                  id="pageRange"
+                  placeholder={t('tools.split.pageRangePlaceholder')}
+                  value={pageRange}
+                  onChange={(e) => setPageRange(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">{t('tools.split.pageRangeHelp')}</p>
               </div>
-            </div>
-          </Card>
 
-          <PDFPageSelector
-            file={files[0].file}
-            selectedPages={selectedPages}
-            onPageToggle={handlePageToggle}
-          />
-
-          {selectedPages.size > 0 && (
-            <Card className="p-6 space-y-4 sticky bottom-4 shadow-lg">
-              <Button onClick={handleDownloadSelected} disabled={processing} className="w-full" size="lg">
+              <Button onClick={handleSplit} disabled={processing || !pageRange} className="w-full" size="lg">
                 {processing ? (
-                  "Processing..."
+                  t('common.processing')
                 ) : (
                   <>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Selected Pages ({selectedPages.size})
+                    <Scissors className="mr-2 h-4 w-4" />
+                    {t('tools.split.splitByRange')}
                   </>
                 )}
               </Button>
             </Card>
-          )}
-
-          <Card className="p-6 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="pageRange">Or use Page Range (Advanced)</Label>
-              <Input
-                id="pageRange"
-                placeholder="e.g., 1-3,5,7-9"
-                value={pageRange}
-                onChange={(e) => setPageRange(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground">Enter page numbers or ranges separated by commas</p>
-            </div>
-
-            <Button onClick={handleSplit} disabled={processing || !pageRange} className="w-full" size="lg">
-              {processing ? (
-                "Processing..."
-              ) : (
-                <>
-                  <Scissors className="mr-2 h-4 w-4" />
-                  Split PDF by Range
-                </>
-              )}
-            </Button>
-          </Card>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </CardContent>
+    </Card>
   )
 }

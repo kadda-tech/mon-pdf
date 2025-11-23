@@ -179,6 +179,10 @@
     "pdfToWord": {
       "title": "PDF to Word",
       "description": "Convert PDF to editable Word document (DOCX)",
+      "heading": "PDF to Word Converter",
+      "intro": "Convert your PDF documents to editable Word (DOCX) format while preserving formatting, images, and tables",
+      "convertButton": "Convert to Word",
+      "converting": "Converting...",
       "scannedDialogTitle": "Scanned Images Detected",
       "scannedDialogDescription": "Your PDF contains {count} page(s) with scanned images (no extractable text). How would you like to handle these pages?",
       "keepImagesTitle": "Keep Images",

@@ -78,10 +78,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+import {SiteHeader} from "@/components/site-header"
+
 export default function MergeLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return children
+  return (
+    <>
+      <SiteHeader />
+      {children}
+    </>
+  )
 }

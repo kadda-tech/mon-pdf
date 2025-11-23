@@ -1,17 +1,28 @@
 "use client"
 
 import {useTranslations} from 'next-intl'
-import {Button} from "@/components/ui/button"
 import {usePathname, useRouter} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
 import {SiteFooter} from "@/components/site-footer"
 import dynamic from 'next/dynamic'
+import {Package, Sparkles, Zap, Shield, Clock} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 // Lazy load the PDFCompressTool to avoid SSR issues with pdf.js
 const PDFCompressTool = dynamic(() => import("@/components/pdf-compress-tool").then(mod => ({ default: mod.PDFCompressTool })), {
   ssr: false,
-  loading: () => null // Remove loading state to prevent LCP delay
+  loading: () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="h-12 w-12 rounded-full border-4 border-green-200 dark:border-green-800 border-t-green-600 dark:border-t-green-400 animate-spin" />
+          <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-green-600 dark:text-green-400" />
+        </div>
+        <p className="text-sm text-muted-foreground">Loading PDF Compressor...</p>
+      </div>
+    </div>
+  )
 })
 
 export default function CompressPDFPage() {
@@ -44,7 +55,7 @@ export default function CompressPDFPage() {
       "@type": "ListItem",
       "position": 2,
       "name": locale === 'fr' ? "Compresser PDF" : "Compress PDF",
-      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'compress-pdf' : 'compress-pdf'}`
+      "item": `https://mon-pdf.fr/${locale}/compress-pdf`
     }]
   }
 
@@ -173,247 +184,136 @@ export default function CompressPDFPage() {
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
-          {/* Breadcrumbs for SEO */}
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-green-500/5 dark:bg-green-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <Package className="h-4 w-4 text-green-600" />
                 {locale === 'fr' ? 'Compresser PDF' : 'Compress PDF'}
               </li>
             </ol>
           </nav>
 
-          
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-green-500 to-emerald-500 shadow-2xl">
+                  <Package className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
 
-          {/* H1 with primary keyword */}
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Compresser un PDF en Ligne - Réduire la Taille PDF Gratuitement'
-                : 'Compress PDF Online - Reduce PDF File Size for Free'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Réduisez la taille de vos fichiers PDF sans perte de qualité. 100% gratuit, sécurisé et privé.'
-                : 'Reduce PDF file size without losing quality. 100% free, secure, and private.'}
-            </p>
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Compresser un PDF en Ligne'
+                    : 'Compress PDF Files Online'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Réduisez la taille de vos fichiers PDF sans perte de qualité. 100% gratuit, sécurisé et privé.'
+                    : 'Reduce PDF file size without losing quality. 100% free, secure, and private.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <PDFCompressTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-green-500/10 dark:shadow-green-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFCompressTool />
+              </div>
+            </Card>
           </div>
 
-        {/* SEO Content */}
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Compresser un PDF en Ligne - Outil Gratuit et Sécurisé</h2>
-              <p>
-                Notre compresseur PDF en ligne vous permet de réduire la taille de vos fichiers PDF sans compromettre la qualité.
-                Que vous ayez besoin de compresser des documents pour l'envoi par email, le stockage dans le cloud ou le partage en ligne,
-                notre outil gratuit optimise vos PDF en quelques secondes. Tous les fichiers sont traités localement dans votre navigateur,
-                garantissant une confidentialité et une sécurité totales.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Glissez-déposez votre fichier PDF ou cliquez pour le sélectionner'
+                    : 'Drag and drop your PDF file or click to select it',
+                  icon: '📄'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Compressez' : 'Compress',
+                  description: locale === 'fr'
+                    ? 'Choisissez le niveau de compression adapté à vos besoins'
+                    : 'Choose the compression level that fits your needs',
+                  icon: '📦'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre PDF optimisé instantanément'
+                    : 'Get your optimized PDF instantly',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-green-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-green-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Compresser un PDF en 3 Étapes Simples</h3>
-              <ol>
-                <li><strong>Téléchargez votre fichier PDF</strong> - Glissez-déposez ou cliquez pour sélectionner le PDF à compresser</li>
-                <li><strong>Choisissez le niveau de compression</strong> - Sélectionnez entre compression standard, forte ou maximale selon vos besoins</li>
-                <li><strong>Compressez et téléchargez</strong> - Cliquez sur compresser et téléchargez votre PDF optimisé instantanément</li>
-              </ol>
-
-              <h3>Pourquoi Compresser vos Fichiers PDF ?</h3>
-              <ul>
-                <li><strong>Envoi par Email Facilité</strong> - Les PDF compressés sont plus faciles à envoyer par email sans dépasser les limites de taille</li>
-                <li><strong>Économie d'Espace de Stockage</strong> - Réduisez l'espace utilisé sur votre disque dur ou dans le cloud</li>
-                <li><strong>Chargement Plus Rapide</strong> - Les fichiers plus petits se chargent plus rapidement en ligne</li>
-                <li><strong>Partage Simplifié</strong> - Partagez des documents volumineux plus facilement via des plateformes en ligne</li>
-                <li><strong>Bande Passante Réduite</strong> - Économisez de la bande passante lors du téléchargement ou du partage</li>
-              </ul>
-
-              <h3>Niveaux de Compression PDF</h3>
-              <p>Notre outil offre plusieurs niveaux de compression pour répondre à vos besoins spécifiques :</p>
-              <ul>
-                <li><strong>Compression Standard</strong> - Réduit la taille de 30-50% tout en maintenant une excellente qualité visuelle. Idéal pour la plupart des usages</li>
-                <li><strong>Compression Forte</strong> - Réduit la taille de 50-70% avec une légère perte de qualité. Parfait pour les documents à usage web</li>
-                <li><strong>Compression Maximale</strong> - Réduit la taille de 70-90% pour les fichiers les plus petits possibles. Recommandé pour les documents textuels</li>
-              </ul>
-
-              <h3>Cas d'Utilisation de la Compression PDF</h3>
-              <p>Compressez vos PDF dans ces situations :</p>
-              <ul>
-                <li><strong>Envoi par Email</strong> - Respectez les limites de taille des pièces jointes (généralement 25 Mo)</li>
-                <li><strong>Sites Web</strong> - Accélérez le chargement des PDF sur votre site web</li>
-                <li><strong>Stockage Cloud</strong> - Économisez de l'espace sur Google Drive, Dropbox ou OneDrive</li>
-                <li><strong>Archives</strong> - Réduisez l'espace nécessaire pour archiver des documents</li>
-                <li><strong>Formulaires en Ligne</strong> - Respectez les limites de téléchargement des formulaires web</li>
-                <li><strong>Présentations</strong> - Réduisez la taille de présentations PDF avec beaucoup d'images</li>
-              </ul>
-
-              <h3>Conseils pour Optimiser la Compression PDF</h3>
-              <ul>
-                <li>Pour les documents principalement textuels, utilisez la compression maximale sans perte de lisibilité</li>
-                <li>Pour les PDF avec images importantes, préférez la compression standard ou forte</li>
-                <li>Testez différents niveaux de compression pour trouver le meilleur équilibre taille/qualité</li>
-                <li>Compressez avant de fusionner plusieurs PDF pour obtenir le fichier final le plus petit</li>
-                <li>Pour les documents scannés, envisagez d'utiliser l'OCR avant la compression</li>
-              </ul>
-
-              <h3>Foire Aux Questions (FAQ)</h3>
-
-              <h4>Comment compresser un PDF sans perte de qualité ?</h4>
-              <p>
-                Notre outil offre plusieurs niveaux de compression. Utilisez la compression standard pour une réduction modérée
-                tout en maintenant une excellente qualité visuelle. Pour les documents avec beaucoup d'images, la compression forte
-                peut réduire significativement la taille sans perte notable.
-              </p>
-
-              <h4>Quelle est la réduction de taille moyenne ?</h4>
-              <p>
-                La réduction dépend du contenu de votre PDF. Les fichiers avec beaucoup d'images peuvent être réduits de 50-80%,
-                tandis que les PDF principalement textuels peuvent voir une réduction de 20-40%. Les documents déjà optimisés
-                peuvent avoir une réduction plus limitée.
-              </p>
-
-              <h4>Mes fichiers sont-ils en sécurité ?</h4>
-              <p>
-                Oui, tous les fichiers sont traités localement dans votre navigateur. Vos documents ne sont jamais téléchargés
-                sur nos serveurs, garantissant une confidentialité totale. Les fichiers sont automatiquement supprimés de votre
-                navigateur une fois que vous fermez la page.
-              </p>
-
-              <h4>Puis-je compresser plusieurs PDF à la fois ?</h4>
-              <p>
-                Actuellement, notre outil compresse un fichier à la fois pour garantir la meilleure qualité et performance.
-                Vous pouvez compresser plusieurs fichiers en les traitant successivement.
-              </p>
-
-              <h4>La compression affecte-t-elle les liens et les formulaires ?</h4>
-              <p>
-                Non, la compression optimise uniquement les images et les éléments graphiques. Les liens hypertextes,
-                les formulaires interactifs et les signets sont préservés intacts.
-              </p>
-
-              <h3>Outils PDF Connexes</h3>
-              <p>Découvrez nos autres outils PDF gratuits :</p>
-              <ul>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combinez plusieurs fichiers PDF en un seul</li>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Diviser PDF</Link> - Séparez un PDF en plusieurs fichiers</li>
-                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organiser PDF</Link> - Réorganisez, supprimez ou faites pivoter les pages</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Numéroter PDF</Link> - Ajoutez des numéros de page à vos documents</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Compress PDF Online - Free and Secure Tool</h2>
-              <p>
-                Our online PDF compressor allows you to reduce PDF file size without compromising quality.
-                Whether you need to compress documents for email sending, cloud storage, or online sharing,
-                our free tool optimizes your PDFs in seconds. All files are processed locally in your browser,
-                ensuring complete privacy and security.
-              </p>
-
-              <h3>How to Compress a PDF in 3 Simple Steps</h3>
-              <ol>
-                <li><strong>Upload your PDF file</strong> - Drag and drop or click to select the PDF to compress</li>
-                <li><strong>Choose compression level</strong> - Select between standard, high, or maximum compression based on your needs</li>
-                <li><strong>Compress and download</strong> - Click compress and download your optimized PDF instantly</li>
-              </ol>
-
-              <h3>Why Compress Your PDF Files?</h3>
-              <ul>
-                <li><strong>Easier Email Sending</strong> - Compressed PDFs are easier to email without exceeding size limits</li>
-                <li><strong>Storage Space Savings</strong> - Reduce space used on your hard drive or in the cloud</li>
-                <li><strong>Faster Loading</strong> - Smaller files load faster online</li>
-                <li><strong>Simplified Sharing</strong> - Share large documents more easily via online platforms</li>
-                <li><strong>Reduced Bandwidth</strong> - Save bandwidth when uploading or sharing</li>
-              </ul>
-
-              <h3>PDF Compression Levels</h3>
-              <p>Our tool offers multiple compression levels to meet your specific needs:</p>
-              <ul>
-                <li><strong>Standard Compression</strong> - Reduces size by 30-50% while maintaining excellent visual quality. Ideal for most uses</li>
-                <li><strong>High Compression</strong> - Reduces size by 50-70% with slight quality loss. Perfect for web documents</li>
-                <li><strong>Maximum Compression</strong> - Reduces size by 70-90% for the smallest possible files. Recommended for text documents</li>
-              </ul>
-
-              <h3>PDF Compression Use Cases</h3>
-              <p>Compress your PDFs in these situations:</p>
-              <ul>
-                <li><strong>Email Sending</strong> - Meet attachment size limits (typically 25 MB)</li>
-                <li><strong>Websites</strong> - Speed up PDF loading on your website</li>
-                <li><strong>Cloud Storage</strong> - Save space on Google Drive, Dropbox, or OneDrive</li>
-                <li><strong>Archives</strong> - Reduce space needed to archive documents</li>
-                <li><strong>Online Forms</strong> - Meet upload limits for web forms</li>
-                <li><strong>Presentations</strong> - Reduce size of PDF presentations with many images</li>
-              </ul>
-
-              <h3>Tips for Optimizing PDF Compression</h3>
-              <ul>
-                <li>For primarily text documents, use maximum compression without losing readability</li>
-                <li>For PDFs with important images, prefer standard or high compression</li>
-                <li>Test different compression levels to find the best size/quality balance</li>
-                <li>Compress before merging multiple PDFs to get the smallest final file</li>
-                <li>For scanned documents, consider using OCR before compression</li>
-              </ul>
-
-              <h3>Frequently Asked Questions (FAQ)</h3>
-
-              <h4>How to compress PDF without losing quality?</h4>
-              <p>
-                Our tool offers multiple compression levels. Use standard compression for moderate reduction
-                while maintaining excellent visual quality. For documents with many images, high compression
-                can significantly reduce size without noticeable loss.
-              </p>
-
-              <h4>What is the average size reduction?</h4>
-              <p>
-                The reduction depends on your PDF content. Files with many images can be reduced by 50-80%,
-                while text-heavy PDFs may see 20-40% reduction. Already optimized documents may have more
-                limited reduction.
-              </p>
-
-              <h4>Are my files secure?</h4>
-              <p>
-                Yes, all files are processed locally in your browser. Your documents are never uploaded
-                to our servers, ensuring complete privacy. Files are automatically removed from your
-                browser once you close the page.
-              </p>
-
-              <h4>Can I compress multiple PDFs at once?</h4>
-              <p>
-                Currently, our tool compresses one file at a time to ensure the best quality and performance.
-                You can compress multiple files by processing them successively.
-              </p>
-
-              <h4>Does compression affect links and forms?</h4>
-              <p>
-                No, compression only optimizes images and graphics. Hyperlinks, interactive forms,
-                and bookmarks are preserved intact.
-              </p>
-
-              <h3>Related PDF Tools</h3>
-              <p>Explore our other free PDF tools:</p>
-              <ul>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDF files into one</li>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Split PDF</Link> - Separate a PDF into multiple files</li>
-                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organize PDF</Link> - Rearrange, delete, or rotate pages</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

@@ -74,7 +74,7 @@ export default function BlogPage() {
         <nav aria-label="Breadcrumb" className="mb-6">
           <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
             <li>
-              <Link href={`/${locale}`} className="hover:text-foreground">
+              <Link href={`/${locale}/home`} className="hover:text-foreground">
                 {locale === 'fr' ? 'Accueil' : 'Home'}
               </Link>
             </li>

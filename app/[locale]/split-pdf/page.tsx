@@ -1,21 +1,32 @@
 "use client"
 
 import {useTranslations} from 'next-intl'
-import {usePathname, useRouter} from 'next/navigation'
+import {usePathname} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
 import {SiteFooter} from "@/components/site-footer"
 import dynamic from 'next/dynamic'
+import {Scissors, Sparkles, Zap, Shield, Clock} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 // Lazy load the PDFSplitTool to avoid SSR issues with pdf.js
 const PDFSplitTool = dynamic(() => import("@/components/pdf-split-tool").then(mod => ({ default: mod.PDFSplitTool })), {
   ssr: false,
-  loading: () => null // Remove loading state to prevent LCP delay
+  loading: () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="h-12 w-12 rounded-full border-4 border-purple-200 dark:border-purple-800 border-t-purple-600 dark:border-t-purple-400 animate-spin" />
+          <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-purple-600 dark:text-purple-400" />
+        </div>
+        <p className="text-sm text-muted-foreground">Loading PDF Splitter...</p>
+      </div>
+    </div>
+  )
 })
 
 export default function SplitPDFPage() {
   const t = useTranslations()
-  const router = useRouter()
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'en'
 
@@ -43,7 +54,7 @@ export default function SplitPDFPage() {
       "@type": "ListItem",
       "position": 2,
       "name": locale === 'fr' ? "Diviser PDF" : "Split PDF",
-      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'split-pdf' : 'split-pdf'}`
+      "item": `https://mon-pdf.fr/${locale}/split-pdf`
     }]
   }
 
@@ -79,83 +90,9 @@ export default function SplitPDFPage() {
     ]
   }
 
-  const softwareSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": locale === 'fr' ? "Diviser PDF en Ligne" : "Split PDF Online",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Web Browser",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.7",
-      "reviewCount": "1923"
-    }
-  }
-
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": locale === 'fr' ? [
-      {
-        "@type": "Question",
-        "name": "Comment diviser un PDF en plusieurs fichiers ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Téléchargez votre PDF, sélectionnez les pages que vous souhaitez extraire, puis cliquez sur diviser. Notre outil créera automatiquement des fichiers PDF séparés pour chaque sélection."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Puis-je diviser un PDF protégé par mot de passe ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Si le PDF est protégé par mot de passe pour l'ouverture, vous devrez d'abord le déverrouiller. Les PDF protégés en écriture peuvent généralement être divisés sans problème."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Y a-t-il une limite au nombre de pages ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Non, vous pouvez diviser des PDF de n'importe quelle taille. La seule limite est la mémoire de votre appareil. Notre outil traite tout localement dans votre navigateur."
-        }
-      }
-    ] : [
-      {
-        "@type": "Question",
-        "name": "How do I split a PDF into multiple files?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Upload your PDF, select the pages you want to extract, then click split. Our tool will automatically create separate PDF files for each selection."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I split a password-protected PDF?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "If the PDF is password-protected for opening, you'll need to unlock it first. Write-protected PDFs can usually be split without issues."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a limit on the number of pages?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No, you can split PDFs of any size. The only limit is your device's memory. Our tool processes everything locally in your browser."
-        }
-      }
-    ]
-  }
-
   return (
     <>
-      {/* Structured Data - loaded after LCP with strategy afterInteractive */}
+      {/* Structured Data */}
       <Script id="organization-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(organizationSchema)}
       </Script>
@@ -165,251 +102,137 @@ export default function SplitPDFPage() {
       <Script id="howto-schema" type="application/ld+json" strategy="afterInteractive">
         {JSON.stringify(howToSchema)}
       </Script>
-      <Script id="software-schema" type="application/ld+json" strategy="afterInteractive">
-        {JSON.stringify(softwareSchema)}
-      </Script>
-      <Script id="faq-schema" type="application/ld+json" strategy="afterInteractive">
-        {JSON.stringify(faqSchema)}
-      </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
-          {/* Breadcrumbs for SEO */}
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-pink-500/5 dark:bg-pink-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <Scissors className="h-4 w-4 text-purple-600" />
                 {locale === 'fr' ? 'Diviser PDF' : 'Split PDF'}
               </li>
             </ol>
           </nav>
 
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-2xl">
+                  <Scissors className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
 
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Diviser un PDF en Ligne'
+                    : 'Split PDF Files Online'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Séparez vos PDF en quelques secondes. Extrayez des pages spécifiques ou divisez votre document en plusieurs fichiers.'
+                    : 'Separate your PDFs in seconds. Extract specific pages or split your document into multiple files.'}
+                </p>
+              </div>
 
-          {/* H1 with primary keyword */}
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Diviser un PDF en Ligne - Outil Gratuit de Séparation PDF'
-                : 'Split PDF Files Online - Free PDF Separator Tool'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Séparez un PDF en plusieurs fichiers ou extrayez des pages spécifiques. 100% gratuit, sécurisé et privé.'
-                : 'Separate a PDF into multiple files or extract specific pages. 100% free, secure, and private.'}
-            </p>
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <PDFSplitTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-purple-500/10 dark:shadow-purple-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFSplitTool />
+              </div>
+            </Card>
           </div>
 
-        {/* SEO Content */}
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Diviser un PDF en Ligne - Outil Gratuit et Sécurisé</h2>
-              <p>
-                Notre outil de division PDF en ligne vous permet de séparer un fichier PDF en plusieurs documents ou d'extraire des pages spécifiques en quelques secondes.
-                Que vous ayez besoin de diviser un rapport volumineux, d'extraire des chapitres d'un manuel ou de séparer des documents scannés, notre diviseur PDF
-                gratuit traite tous vos fichiers localement dans votre navigateur, garantissant une confidentialité et une sécurité totales.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Glissez-déposez votre fichier PDF ou cliquez pour le sélectionner'
+                    : 'Drag and drop your PDF file or click to select it',
+                  icon: '📄'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Sélectionnez' : 'Select',
+                  description: locale === 'fr'
+                    ? 'Choisissez les pages que vous souhaitez extraire'
+                    : 'Choose the pages you want to extract',
+                  icon: '✂️'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre PDF divisé instantanément'
+                    : 'Get your split PDF instantly',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-purple-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-purple-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Diviser un PDF en 3 Étapes Simples</h3>
-              <ol>
-                <li><strong>Téléchargez votre fichier PDF</strong> - Glissez-déposez ou cliquez pour sélectionner le fichier PDF que vous souhaitez diviser</li>
-                <li><strong>Sélectionnez les pages</strong> - Choisissez les pages que vous souhaitez extraire ou définissez les plages de division</li>
-                <li><strong>Divisez et téléchargez</strong> - Cliquez sur le bouton diviser et téléchargez vos fichiers PDF séparés instantanément</li>
-              </ol>
-
-              <h3>Pourquoi Choisir Notre Outil de Division PDF ?</h3>
-              <ul>
-                <li><strong>100% Gratuit</strong> - Aucun frais caché, aucune inscription requise, aucune limite de fichiers</li>
-                <li><strong>Totalement Sécurisé</strong> - Vos fichiers ne quittent jamais votre appareil. Le traitement se fait entièrement dans votre navigateur</li>
-                <li><strong>Extraction Flexible</strong> - Extrayez des pages individuelles, des plages de pages ou divisez par intervalles</li>
-                <li><strong>Rapide et Efficace</strong> - Divisez des PDF volumineux en quelques secondes sans compromis sur la qualité</li>
-                <li><strong>Préserve la Qualité</strong> - Maintient la qualité originale, la mise en forme et les hyperliens de vos documents</li>
-                <li><strong>Fonctionne Partout</strong> - Compatible avec tous les appareils : Windows, Mac, Linux, iOS, Android</li>
-              </ul>
-
-              <h3>Cas d'Utilisation Courants pour la Division de PDF</h3>
-              <p>Notre outil de division PDF est parfait pour :</p>
-              <ul>
-                <li><strong>Documents Volumineux</strong> - Divisez de gros rapports ou manuels en chapitres ou sections plus petits</li>
-                <li><strong>Documents Scannés</strong> - Séparez plusieurs documents scannés en un seul fichier PDF</li>
-                <li><strong>Extraction de Pages</strong> - Extrayez des pages spécifiques d'un contrat ou d'un document pour les partager</li>
-                <li><strong>Documents Académiques</strong> - Divisez des thèses ou des mémoires en chapitres individuels</li>
-                <li><strong>Factures et Relevés</strong> - Séparez des relevés bancaires ou des factures multi-mois en documents individuels</li>
-                <li><strong>Présentations</strong> - Extrayez des diapositives spécifiques d'une présentation PDF</li>
-              </ul>
-
-              <h3>Méthodes de Division PDF</h3>
-              <p>Notre outil offre plusieurs façons de diviser vos PDF :</p>
-              <ul>
-                <li><strong>Extraire des Pages</strong> - Sélectionnez des pages spécifiques à extraire dans un nouveau PDF</li>
-                <li><strong>Division par Plage</strong> - Définissez des plages de pages pour créer plusieurs documents</li>
-                <li><strong>Division en Pages Uniques</strong> - Divisez chaque page en un fichier PDF séparé</li>
-                <li><strong>Suppression de Pages</strong> - Créez un nouveau PDF en supprimant les pages indésirables</li>
-              </ul>
-
-              <h3>Conseils pour Diviser Efficacement vos PDF</h3>
-              <ul>
-                <li>Prévisualisez votre PDF avant de le diviser pour identifier les bonnes pages</li>
-                <li>Utilisez des noms de fichiers descriptifs pour vos documents divisés</li>
-                <li>Pour les documents volumineux, envisagez de diviser par chapitres ou sections logiques</li>
-                <li>Vérifiez que les signets et la table des matières sont préservés après la division</li>
-                <li>Combinez avec notre <Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">outil de fusion PDF</Link> pour réorganiser les pages si nécessaire</li>
-              </ul>
-
-              <h3>Foire Aux Questions (FAQ)</h3>
-
-              <h4>Comment diviser un PDF en plusieurs fichiers ?</h4>
-              <p>
-                Téléchargez votre PDF, sélectionnez les pages que vous souhaitez extraire, puis cliquez sur diviser. Notre outil créera
-                automatiquement des fichiers PDF séparés pour chaque sélection que vous pourrez télécharger individuellement.
-              </p>
-
-              <h4>Puis-je diviser un PDF protégé par mot de passe ?</h4>
-              <p>
-                Si le PDF est protégé par mot de passe pour l'ouverture, vous devrez d'abord le déverrouiller. Les PDF protégés en écriture
-                peuvent généralement être divisés sans problème.
-              </p>
-
-              <h4>Y a-t-il une limite au nombre de pages ?</h4>
-              <p>
-                Non, vous pouvez diviser des PDF de n'importe quelle taille. La seule limite est la mémoire de votre appareil.
-                Notre outil traite tout localement dans votre navigateur, donc les appareils modernes peuvent facilement gérer des documents de centaines de pages.
-              </p>
-
-              <h4>La qualité de mes PDF sera-t-elle préservée après la division ?</h4>
-              <p>
-                Absolument. Notre outil maintient la qualité originale de vos documents PDF, y compris les images haute résolution,
-                la mise en forme du texte, les hyperliens interactifs et les formulaires.
-              </p>
-
-              <h4>Puis-je extraire uniquement certaines pages d'un PDF ?</h4>
-              <p>
-                Oui, notre outil vous permet d'extraire des pages spécifiques en sélectionnant exactement les pages que vous souhaitez
-                conserver. Vous pouvez sélectionner des pages individuelles ou des plages de pages.
-              </p>
-
-              <h3>Outils PDF Connexes</h3>
-              <p>Découvrez nos autres outils PDF gratuits :</p>
-              <ul>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combinez plusieurs fichiers PDF en un seul</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">compresser PDF</Link> - Réduisez la taille de vos fichiers PDF</li>
-                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organiser PDF</Link> - Réorganisez, supprimez ou faites pivoter les pages</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Numéroter PDF</Link> - Ajoutez des numéros de page à vos documents</li>
-              </ul>
-
-            </>
-          ) : (
-            <>
-              <h2>Split PDF Files Online - Free and Secure Tool</h2>
-              <p>
-                Our online PDF splitter tool allows you to separate a PDF file into multiple documents or extract specific pages in seconds.
-                Whether you need to split a large report, extract chapters from a manual, or separate scanned documents, our free PDF divider
-                processes all your files locally in your browser, ensuring complete privacy and security.
-              </p>
-
-              <h3>How to Split a PDF in 3 Simple Steps</h3>
-              <ol>
-                <li><strong>Upload your PDF file</strong> - Drag and drop or click to select the PDF file you want to split</li>
-                <li><strong>Select pages</strong> - Choose the pages you want to extract or define split ranges</li>
-                <li><strong>Split and download</strong> - Click the split button and download your separated PDF files instantly</li>
-              </ol>
-
-              <h3>Why Choose Our PDF Splitter Tool?</h3>
-              <ul>
-                <li><strong>100% Free</strong> - No hidden fees, no registration required, no file limits</li>
-                <li><strong>Completely Secure</strong> - Your files never leave your device. All processing happens entirely in your browser</li>
-                <li><strong>Flexible Extraction</strong> - Extract individual pages, page ranges, or split by intervals</li>
-                <li><strong>Fast and Efficient</strong> - Split large PDFs in seconds without compromising quality</li>
-                <li><strong>Preserves Quality</strong> - Maintains original quality, formatting, and hyperlinks in your documents</li>
-                <li><strong>Works Everywhere</strong> - Compatible with all devices: Windows, Mac, Linux, iOS, Android</li>
-              </ul>
-
-              <h3>Common Use Cases for Splitting PDF Files</h3>
-              <p>Our PDF split tool is perfect for:</p>
-              <ul>
-                <li><strong>Large Documents</strong> - Split large reports or manuals into smaller chapters or sections</li>
-                <li><strong>Scanned Documents</strong> - Separate multiple scanned documents into individual PDF files</li>
-                <li><strong>Page Extraction</strong> - Extract specific pages from a contract or document to share</li>
-                <li><strong>Academic Papers</strong> - Divide theses or dissertations into individual chapters</li>
-                <li><strong>Invoices and Statements</strong> - Separate multi-month bank statements or invoices into individual documents</li>
-                <li><strong>Presentations</strong> - Extract specific slides from a PDF presentation</li>
-              </ul>
-
-              <h3>PDF Splitting Methods</h3>
-              <p>Our tool offers several ways to split your PDFs:</p>
-              <ul>
-                <li><strong>Extract Pages</strong> - Select specific pages to extract into a new PDF</li>
-                <li><strong>Split by Range</strong> - Define page ranges to create multiple documents</li>
-                <li><strong>Split into Single Pages</strong> - Separate each page into its own PDF file</li>
-                <li><strong>Remove Pages</strong> - Create a new PDF by removing unwanted pages</li>
-              </ul>
-
-              <h3>Tips for Splitting PDFs Effectively</h3>
-              <ul>
-                <li>Preview your PDF before splitting to identify the correct pages</li>
-                <li>Use descriptive file names for your split documents</li>
-                <li>For large documents, consider splitting by chapters or logical sections</li>
-                <li>Verify that bookmarks and table of contents are preserved after splitting</li>
-                <li>Combine with our <Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">merge PDF tool</Link> to rearrange pages if needed</li>
-              </ul>
-
-              <h3>Frequently Asked Questions (FAQ)</h3>
-
-              <h4>How do I split a PDF into multiple files?</h4>
-              <p>
-                Upload your PDF, select the pages you want to extract, then click split. Our tool will automatically create
-                separate PDF files for each selection that you can download individually.
-              </p>
-
-              <h4>Can I split a password-protected PDF?</h4>
-              <p>
-                If the PDF is password-protected for opening, you'll need to unlock it first. Write-protected PDFs can
-                usually be split without issues.
-              </p>
-
-              <h4>Is there a limit on the number of pages?</h4>
-              <p>
-                No, you can split PDFs of any size. The only limit is your device's memory. Our tool processes everything
-                locally in your browser, so modern devices can easily handle documents with hundreds of pages.
-              </p>
-
-              <h4>Will the quality of my PDFs be preserved after splitting?</h4>
-              <p>
-                Absolutely. Our tool maintains the original quality of your PDF documents, including high-resolution images,
-                text formatting, interactive hyperlinks, and forms.
-              </p>
-
-              <h4>Can I extract only certain pages from a PDF?</h4>
-              <p>
-                Yes, our tool allows you to extract specific pages by selecting exactly which pages you want to keep.
-                You can select individual pages or page ranges.
-              </p>
-
-              <h3>Related PDF Tools</h3>
-              <p>Explore our other free PDF tools:</p>
-              <ul>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDF files into one</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compress PDF</Link> - Reduce the size of your PDF files</li>
-                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organize PDF</Link> - Rearrange, delete, or rotate pages</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

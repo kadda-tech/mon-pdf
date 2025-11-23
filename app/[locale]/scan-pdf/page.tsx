@@ -5,7 +5,9 @@ import {PDFScannerToolClient} from "@/components/pdf-scanner-tool-client"
 import {usePathname, useRouter} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
-import {SiteFooter} from "@/components/site-footer";
+import {SiteFooter} from "@/components/site-footer"
+import {Clock, Scan, Shield, Zap} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 export default function ScanPDFPage() {
   const t = useTranslations()
@@ -147,232 +149,136 @@ export default function ScanPDFPage() {
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-teal-500/5 dark:bg-teal-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/5 dark:bg-cyan-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <Scan className="h-4 w-4 text-teal-600" />
                 {locale === 'fr' ? 'Scanner PDF' : 'Scan PDF'}
               </li>
             </ol>
           </nav>
 
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Scanner PDF en Ligne - Numériser Document vers PDF Gratuit'
-                : 'Scan PDF Online - Digitize Document to PDF Free'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Utilisez votre caméra pour scanner des documents en PDF. Rapide, gratuit et sécurisé.'
-                : 'Use your camera to scan documents to PDF. Fast, free and secure.'}
-            </p>
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-teal-500 to-cyan-500 shadow-2xl">
+                  <Scan className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Scanner PDF en Ligne - Numériser Document vers PDF Gratuit'
+                    : 'Scan PDF Online - Digitize Document to PDF Free'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Utilisez votre caméra pour scanner des documents en PDF. Rapide, gratuit et sécurisé.'
+                    : 'Use your camera to scan documents to PDF. Fast, free and secure.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-teal-500/10 border border-teal-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-teal-600" />
+                  <span className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-7xl mx-auto">
-            <PDFScannerToolClient />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-teal-500/10 dark:shadow-teal-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFScannerToolClient />
+              </div>
+            </Card>
           </div>
 
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Scanner PDF en Ligne - Outil Gratuit</h2>
-              <p>
-                Notre scanner PDF en ligne vous permet de numériser des documents physiques directement depuis votre navigateur.
-                Utilisez votre webcam d'ordinateur ou la caméra de votre téléphone mobile pour créer des PDF de qualité professionnelle.
-                Pas besoin de scanner physique - votre appareil photo suffit ! Notre outil traite tout localement pour une confidentialité totale.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Activez la caméra' : 'Enable Camera',
+                  description: locale === 'fr'
+                    ? 'Autorisez l\'accès à votre webcam ou caméra mobile'
+                    : 'Allow access to your webcam or mobile camera',
+                  icon: '📷'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Scannez' : 'Scan',
+                  description: locale === 'fr'
+                    ? 'Capturez des photos claires de votre document'
+                    : 'Capture clear photos of your document',
+                  icon: '📄'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre PDF scanné instantanément'
+                    : 'Get your scanned PDF instantly',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-teal-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-teal-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Scanner un Document en PDF</h3>
-              <ol>
-                <li><strong>Activer la caméra</strong> - Autorisez l'accès à votre webcam ou caméra mobile</li>
-                <li><strong>Capturer le document</strong> - Prenez des photos claires de chaque page</li>
-                <li><strong>Télécharger le PDF</strong> - Obtenez votre document numérisé en PDF</li>
-              </ol>
-
-              <h3>Fonctionnalités du Scanner</h3>
-              <ul>
-                <li><strong>Scanner Mobile</strong> - Utilisez votre téléphone comme scanner portable</li>
-                <li><strong>Scanner Webcam</strong> - Numérisez avec la caméra de votre ordinateur</li>
-                <li><strong>Multi-Pages</strong> - Scannez plusieurs pages en un seul PDF</li>
-                <li><strong>Détection Automatique</strong> - Détection des bords et correction de perspective</li>
-                <li><strong>Amélioration d'Image</strong> - Optimisation automatique de la qualité</li>
-                <li><strong>Rotation Automatique</strong> - Correction de l'orientation des pages</li>
-              </ul>
-
-              <h3>Cas d'Utilisation</h3>
-              <ul>
-                <li><strong>Documents Professionnels</strong> - Numérisez contrats, factures, rapports</li>
-                <li><strong>Documents Administratifs</strong> - Scannez formulaires, attestations, certificats</li>
-                <li><strong>Notes et Cours</strong> - Numérisez notes manuscrites et supports de cours</li>
-                <li><strong>Reçus et Factures</strong> - Gardez une copie numérique de vos reçus</li>
-                <li><strong>Livres et Articles</strong> - Numérisez pages de livres et articles de presse</li>
-                <li><strong>Tableaux Blancs</strong> - Capturez le contenu de tableaux blancs</li>
-              </ul>
-
-              <h3>Avantages de Notre Scanner PDF</h3>
-              <ul>
-                <li><strong>Sans Application</strong> - Fonctionne directement dans le navigateur, aucune installation</li>
-                <li><strong>Multi-Plateforme</strong> - Compatible PC, Mac, iOS, Android</li>
-                <li><strong>Qualité Professionnelle</strong> - Images nettes et lisibles</li>
-                <li><strong>100% Gratuit</strong> - Aucune limite de scans, aucune inscription</li>
-                <li><strong>Confidentialité Totale</strong> - Traitement local, vos documents restent privés</li>
-                <li><strong>Facilité d'Usage</strong> - Interface intuitive et simple</li>
-              </ul>
-
-              <h3>Conseils pour un Scan de Qualité</h3>
-              <ul>
-                <li><strong>Bon Éclairage</strong> - Scannez dans un endroit bien éclairé sans ombres</li>
-                <li><strong>Stabilité</strong> - Maintenez l'appareil stable pour éviter le flou</li>
-                <li><strong>Document à Plat</strong> - Aplatissez bien le document avant de scanner</li>
-                <li><strong>Contraste</strong> - Utilisez un fond uni contrastant avec le document</li>
-                <li><strong>Cadrage</strong> - Cadrez le document entièrement dans la vue</li>
-              </ul>
-
-              <h3>Scanner PDF vs Scanner Physique</h3>
-              <ul>
-                <li><strong>Mobilité</strong> - Scannez n'importe où avec votre téléphone</li>
-                <li><strong>Coût</strong> - Gratuit, pas besoin d'acheter un scanner</li>
-                <li><strong>Rapidité</strong> - Scan instantané sans configuration</li>
-                <li><strong>Accessibilité</strong> - Disponible 24/7 depuis n'importe où</li>
-                <li><strong>Espace</strong> - Pas d'équipement encombrant à stocker</li>
-              </ul>
-
-              <h3>Foire Aux Questions</h3>
-
-              <h4>Comment scanner un document en PDF ?</h4>
-              <p>
-                Autorisez l'accès à votre caméra (webcam ou mobile), positionnez votre document devant la caméra,
-                et capturez des photos claires. Notre outil convertira automatiquement vos photos en un PDF de qualité
-                professionnelle que vous pourrez télécharger immédiatement.
-              </p>
-
-              <h4>Puis-je scanner avec mon téléphone ?</h4>
-              <p>
-                Oui, absolument ! Notre scanner fonctionne parfaitement sur mobile. Utilisez la caméra de votre téléphone
-                pour scanner des documents et créer des PDF directement depuis votre navigateur. C'est l'outil idéal
-                pour scanner en déplacement.
-              </p>
-
-              <h4>Le scanner est-il sécurisé ?</h4>
-              <p>
-                Oui, votre confidentialité est garantie. Tout le traitement est effectué localement dans votre navigateur.
-                Vos documents scannés ne sont jamais envoyés à un serveur ou stockés en ligne, assurant une sécurité
-                et une confidentialité totales.
-              </p>
-
-              <h3>Outils Connexes</h3>
-              <ul>
-                <li><Link href={`/${locale}/ocr`} className="text-primary hover:underline">OCR PDF</Link> - Extraire texte de scans PDF</li>
-                <li><Link href={`/${locale}/image-to-pdf`} className="text-primary hover:underline">Image vers PDF</Link> - Convertir images en PDF</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compresser PDF</Link> - Réduire la taille du scan</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Scan PDF Online - Free Tool</h2>
-              <p>
-                Our online PDF scanner allows you to digitize physical documents directly from your browser.
-                Use your computer webcam or mobile phone camera to create professional-quality PDFs.
-                No need for a physical scanner - your camera is enough! Our tool processes everything locally for complete privacy.
-              </p>
-
-              <h3>How to Scan a Document to PDF</h3>
-              <ol>
-                <li><strong>Enable camera</strong> - Allow access to your webcam or mobile camera</li>
-                <li><strong>Capture document</strong> - Take clear photos of each page</li>
-                <li><strong>Download PDF</strong> - Get your digitized document as PDF</li>
-              </ol>
-
-              <h3>Scanner Features</h3>
-              <ul>
-                <li><strong>Mobile Scanner</strong> - Use your phone as a portable scanner</li>
-                <li><strong>Webcam Scanner</strong> - Digitize with your computer camera</li>
-                <li><strong>Multi-Page</strong> - Scan multiple pages into one PDF</li>
-                <li><strong>Auto Detection</strong> - Edge detection and perspective correction</li>
-                <li><strong>Image Enhancement</strong> - Automatic quality optimization</li>
-                <li><strong>Auto Rotation</strong> - Automatic page orientation correction</li>
-              </ul>
-
-              <h3>Use Cases</h3>
-              <ul>
-                <li><strong>Professional Documents</strong> - Scan contracts, invoices, reports</li>
-                <li><strong>Administrative Documents</strong> - Scan forms, certificates, attestations</li>
-                <li><strong>Notes and Courses</strong> - Digitize handwritten notes and course materials</li>
-                <li><strong>Receipts and Invoices</strong> - Keep digital copies of receipts</li>
-                <li><strong>Books and Articles</strong> - Scan book pages and press articles</li>
-                <li><strong>Whiteboards</strong> - Capture whiteboard content</li>
-              </ul>
-
-              <h3>Benefits of Our PDF Scanner</h3>
-              <ul>
-                <li><strong>No App Required</strong> - Works directly in browser, no installation</li>
-                <li><strong>Cross-Platform</strong> - Compatible with PC, Mac, iOS, Android</li>
-                <li><strong>Professional Quality</strong> - Sharp and readable images</li>
-                <li><strong>100% Free</strong> - No scan limits, no registration</li>
-                <li><strong>Complete Privacy</strong> - Local processing, your documents stay private</li>
-                <li><strong>Easy to Use</strong> - Intuitive and simple interface</li>
-              </ul>
-
-              <h3>Tips for Quality Scans</h3>
-              <ul>
-                <li><strong>Good Lighting</strong> - Scan in well-lit area without shadows</li>
-                <li><strong>Stability</strong> - Keep device steady to avoid blur</li>
-                <li><strong>Flat Document</strong> - Flatten document well before scanning</li>
-                <li><strong>Contrast</strong> - Use plain background contrasting with document</li>
-                <li><strong>Framing</strong> - Frame entire document in view</li>
-              </ul>
-
-              <h3>PDF Scanner vs Physical Scanner</h3>
-              <ul>
-                <li><strong>Mobility</strong> - Scan anywhere with your phone</li>
-                <li><strong>Cost</strong> - Free, no need to buy a scanner</li>
-                <li><strong>Speed</strong> - Instant scanning without setup</li>
-                <li><strong>Accessibility</strong> - Available 24/7 from anywhere</li>
-                <li><strong>Space</strong> - No bulky equipment to store</li>
-              </ul>
-
-              <h3>Frequently Asked Questions</h3>
-
-              <h4>How to scan a document to PDF?</h4>
-              <p>
-                Allow camera access (webcam or mobile), position your document in front of the camera,
-                and capture clear photos. Our tool will automatically convert your photos into a professional-quality
-                PDF you can download immediately.
-              </p>
-
-              <h4>Can I scan with my phone?</h4>
-              <p>
-                Yes, absolutely! Our scanner works perfectly on mobile. Use your phone's camera to scan documents
-                and create PDFs directly from your browser. It's the perfect tool for scanning on the go.
-              </p>
-
-              <h4>Is the scanner secure?</h4>
-              <p>
-                Yes, your privacy is guaranteed. All processing is done locally in your browser. Your scanned documents
-                are never sent to a server or stored online, ensuring complete security and confidentiality.
-              </p>
-
-              <h3>Related Tools</h3>
-              <ul>
-                <li><Link href={`/${locale}/ocr`} className="text-primary hover:underline">OCR PDF</Link> - Extract text from scanned PDFs</li>
-                <li><Link href={`/${locale}/image-to-pdf`} className="text-primary hover:underline">Image to PDF</Link> - Convert images to PDF</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compress PDF</Link> - Reduce scan file size</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

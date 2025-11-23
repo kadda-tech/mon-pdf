@@ -1,34 +1,30 @@
 "use client"
 
-import { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { FileText, Upload, Download, Loader2, FileType, AlertCircle, Image as ImageIcon, Scan } from 'lucide-react'
-import { toast } from 'sonner'
+import {useCallback, useState} from 'react'
+import {useDropzone} from 'react-dropzone'
+import {useTranslations} from 'next-intl'
+import {Button} from '@/components/ui/button'
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
+import {Progress} from '@/components/ui/progress'
+import {Alert, AlertDescription} from '@/components/ui/alert'
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '@/components/ui/dialog'
+import {AlertCircle, FileText, FileType, Image as ImageIcon, Loader2, Scan, Upload} from 'lucide-react'
+import {toast} from 'sonner'
 import * as pdfjsLib from 'pdfjs-dist'
 import {
-  Document,
-  Paragraph,
-  TextRun,
-  HeadingLevel,
-  Packer,
   AlignmentType,
+  Document,
+  HeadingLevel,
   ImageRun,
+  Packer,
+  Paragraph,
   Table,
-  TableRow,
   TableCell,
-  WidthType,
-  BorderStyle,
-  UnderlineType,
-  convertInchesToTwip
+  TableRow,
+  TextRun,
+  WidthType
 } from 'docx'
-import { createOCREngine, OCRPageResult } from '@/lib/ocr/ocr-engine'
-import { convertPDFToImages } from '@/lib/ocr/pdf-to-image'
+import {createOCREngine} from '@/lib/ocr/ocr-engine'
 
 // Configure PDF.js worker
 if (typeof window !== 'undefined') {
@@ -63,7 +59,7 @@ interface ExtractedPage {
 }
 
 export function PDFToWordTool() {
-  const t = useTranslations('tools.pdfToWord')
+  const t = useTranslations()
   const [file, setFile] = useState<File | null>(null)
   const [converting, setConverting] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -986,189 +982,85 @@ export function PDFToWordTool() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <>
       <Card>
-        <CardContent className="pt-6">
-          {!file ? (
-            <div
-              {...getRootProps()}
-              className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
-                isDragActive
-                  ? 'border-primary bg-primary/5'
-                  : 'border-muted-foreground/25 hover:border-primary/50'
-              }`}
-            >
-              <input {...getInputProps()} />
-              <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium mb-2">
-                {isDragActive ? 'Drop PDF here' : 'Upload PDF to convert'}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Click to browse or drag and drop your PDF file
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-8 w-8 text-primary" />
-                  <div>
-                    <p className="font-medium">{file.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-                {!converting && (
-                  <Button variant="ghost" size="sm" onClick={reset} className="cursor-pointer">
-                    Change
-                  </Button>
-                )}
-              </div>
-
-              {error && (
-                <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-
-              {converting && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Converting...</span>
-                    <span className="font-medium">{Math.round(progress)}%</span>
-                  </div>
-                  <Progress value={progress} className="h-2" />
-                </div>
-              )}
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={convertToWord}
-                  disabled={converting}
-                  className="flex-1 cursor-pointer"
-                  size="lg"
-                >
-                  {converting ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Converting...
-                    </>
-                  ) : (
-                    <>
-                      <FileType className="mr-2 h-5 w-5" />
-                      Convert to Word
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {showPreview && extractedPages.length > 0 && (
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <FileType className="h-5 w-5" />
-                  Word Document Preview
-                </h3>
-                <Button variant="outline" size="sm" onClick={reset} className="cursor-pointer">
-                  Convert Another
-                </Button>
-              </div>
-
-              <div className="bg-white dark:bg-slate-900 border rounded-lg p-6 max-h-[500px] overflow-y-auto">
-                <div className="space-y-4 font-serif">
-                  {extractedPages.map((page, index) => {
-                    return (
-                      <div key={index} className="space-y-3">
-                        <h2 className="text-lg font-bold text-primary border-b pb-2">
-                          Page {page.pageNumber}
-                        </h2>
-
-                        {!page.hasText && page.canvas ? (
-                          // Show image preview for scanned pages
-                          <div className="flex justify-center my-4">
-                            <img
-                              src={page.canvas.toDataURL('image/png')}
-                              alt={`Page ${page.pageNumber}`}
-                              className="max-w-full border rounded shadow-sm"
-                              style={{ maxHeight: '400px' }}
-                            />
-                          </div>
-                        ) : (
-                          // Show text for pages with extractable text
-                          <>
-                            {page.text.split(/\n\n+/).filter(p => p.trim()).map((para, pIndex) => {
-                              const trimmedText = para.trim()
-                              if (!trimmedText) return null
-
-                              const isLikelyHeading = trimmedText.length < 100 &&
-                                                      (trimmedText === trimmedText.toUpperCase() ||
-                                                       !trimmedText.includes('.'))
-
-                              return isLikelyHeading ? (
-                                <h3 key={pIndex} className="text-base font-bold mt-4 mb-2">
-                                  {trimmedText}
-                                </h3>
-                              ) : (
-                                <p key={pIndex} className="text-sm leading-relaxed text-justify">
-                                  {trimmedText}
-                                </p>
-                              )
-                            })}
-                          </>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <AlertCircle className="h-4 w-4" />
-                <span>This is a preview of the converted content. The actual Word document has been downloaded.</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <h3 className="font-semibold flex items-center gap-2">
-              <AlertCircle className="h-5 w-5" />
-              Conversion Notes
-            </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li className="flex gap-2">
-                <span>•</span>
-                <span>Text formatting preserved (fonts, sizes, styles)</span>
-              </li>
-              <li className="flex gap-2">
-                <span>•</span>
-                <span>Images from PDFs are automatically extracted and embedded</span>
-              </li>
-              <li className="flex gap-2">
-                <span>•</span>
-                <span>Tables are detected and converted with proper structure</span>
-              </li>
-              <li className="flex gap-2">
-                <span>•</span>
-                <span>Scanned images can be embedded or converted to text using OCR</span>
-              </li>
-              <li className="flex gap-2">
-                <span>•</span>
-                <span>All processing happens in your browser - your files stay private</span>
-              </li>
-            </ul>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileType className="h-6 w-6" />
+            {t('tools.pdfToWord.heading')}
+          </CardTitle>
+          <CardDescription>{t('tools.pdfToWord.intro')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+        {!file ? (
+          <div
+            {...getRootProps()}
+            className={`border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer ${
+              isDragActive ? 'border-primary bg-primary/5' : ''
+            }`}
+          >
+            <input {...getInputProps()} />
+            <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-lg mb-2">{t('fileUpload.dragDrop', { type: t('fileUpload.pdf') })}</p>
+            <p className="text-sm text-muted-foreground mb-4">{t('fileUpload.or')}</p>
+            <Button variant="secondary">{t('fileUpload.browse')}</Button>
           </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+              <div className="flex items-center gap-3">
+                <FileText className="h-8 w-8 text-primary" />
+                <div>
+                  <p className="font-medium">{file.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                </div>
+              </div>
+              {!converting && (
+                <Button variant="outline" size="sm" onClick={reset}>
+                  {t('common.cancel')}
+                </Button>
+              )}
+            </div>
+
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {converting && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t('tools.pdfToWord.converting')}</span>
+                  <span className="font-medium">{Math.round(progress)}%</span>
+                </div>
+                <Progress value={progress} className="h-2" />
+              </div>
+            )}
+
+            <Button
+              onClick={convertToWord}
+              disabled={converting}
+              className="w-full"
+              size="lg"
+            >
+              {converting ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  {t('tools.pdfToWord.converting')}
+                </>
+              ) : (
+                <>
+                  <FileType className="mr-2 h-5 w-5" />
+                  {t('tools.pdfToWord.convertButton')}
+                </>
+              )}
+            </Button>
+          </div>
+        )}
         </CardContent>
       </Card>
 
@@ -1178,38 +1070,38 @@ export function PDFToWordTool() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-amber-500" />
-              {t('scannedDialogTitle')}
+              {t('tools.pdfToWord.scannedDialogTitle')}
             </DialogTitle>
             <DialogDescription className="pt-2">
-              {t('scannedDialogDescription', { count: scannedPagesCount })}
+              {t('tools.pdfToWord.scannedDialogDescription', { count: scannedPagesCount })}
             </DialogDescription>
           </DialogHeader>
 
           <div className="flex flex-col space-y-3 py-4">
             <Button
-                onClick={() => handleScannedPagesChoice('image')}
-                variant="outline"
-                className="w-full h-auto py-3 px-3 flex items-start gap-3 hover:bg-primary/5 text-left cursor-pointer"
+              onClick={() => handleScannedPagesChoice('image')}
+              variant="outline"
+              className="w-full h-auto py-3 px-3 flex items-start gap-3 hover:bg-primary/5 text-left cursor-pointer"
             >
               <ImageIcon className="h-5 w-5 mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0 flex flex-col">
-                <div className="font-semibold mb-1">{t('keepImagesTitle')}</div>
+                <div className="font-semibold mb-1">{t('tools.pdfToWord.keepImagesTitle')}</div>
                 <div className="text-xs text-muted-foreground font-normal leading-tight break-words whitespace-normal">
-                  {t('keepImagesDescription')}
+                  {t('tools.pdfToWord.keepImagesDescription')}
                 </div>
               </div>
             </Button>
 
             <Button
-                onClick={() => handleScannedPagesChoice('ocr')}
-                variant="outline"
-                className="w-full h-auto py-3 px-3 flex items-start gap-3 hover:bg-primary/5 text-left cursor-pointer"
+              onClick={() => handleScannedPagesChoice('ocr')}
+              variant="outline"
+              className="w-full h-auto py-3 px-3 flex items-start gap-3 hover:bg-primary/5 text-left cursor-pointer"
             >
               <Scan className="h-5 w-5 mt-0.5 shrink-0" />
               <div className="flex-1 min-w-0 flex flex-col">
-                <div className="font-semibold mb-1">{t('useOcrTitle')}</div>
+                <div className="font-semibold mb-1">{t('tools.pdfToWord.useOcrTitle')}</div>
                 <div className="text-xs text-muted-foreground font-normal leading-tight break-words whitespace-normal">
-                  {t('useOcrDescription')}
+                  {t('tools.pdfToWord.useOcrDescription')}
                 </div>
               </div>
             </Button>
@@ -1217,10 +1109,10 @@ export function PDFToWordTool() {
 
           <DialogFooter className="flex-row items-center justify-center gap-2 text-xs text-muted-foreground sm:justify-center">
             <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-            <span className="text-center">{t('dialogNote')}</span>
+            <span className="text-center">{t('tools.pdfToWord.dialogNote')}</span>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   )
 }

@@ -1,11 +1,29 @@
 "use client"
 
 import {useTranslations} from 'next-intl'
-import {PDFMergeTool} from "@/components/pdf-merge-tool"
 import {usePathname, useRouter} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
 import {SiteFooter} from "@/components/site-footer"
+import dynamic from 'next/dynamic'
+import {Clock, Combine, Shield, Sparkles, Zap} from "lucide-react"
+import {Card} from "@/components/ui/card"
+
+// Lazy load the PDFMergeTool to avoid SSR issues with pdf.js
+const PDFMergeTool = dynamic(() => import("@/components/pdf-merge-tool").then(mod => ({ default: mod.PDFMergeTool })), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative">
+          <div className="h-12 w-12 rounded-full border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 animate-spin" />
+          <Sparkles className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-blue-600 dark:text-blue-400" />
+        </div>
+        <p className="text-sm text-muted-foreground">Loading PDF Merger...</p>
+      </div>
+    </div>
+  )
+})
 
 export default function MergePDFPage() {
   const t = useTranslations()
@@ -166,218 +184,131 @@ export default function MergePDFPage() {
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
-          {/* Breadcrumbs for SEO */}
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/5 dark:bg-cyan-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <Combine className="h-4 w-4 text-blue-600" />
                 {locale === 'fr' ? 'Fusionner PDF' : 'Merge PDF'}
               </li>
             </ol>
           </nav>
 
-          {/* H1 with primary keyword */}
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Fusionner des PDF en Ligne - Outil Gratuit de Combinaison PDF'
-                : 'Merge PDF Files Online - Free PDF Combiner Tool'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Combinez plusieurs fichiers PDF en un seul document. 100% gratuit, sécurisé et privé.'
-                : 'Combine multiple PDF files into one document. 100% free, secure, and private.'}
-            </p>
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-2xl">
+                  <Combine className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
+
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Fusionner des PDF en Ligne'
+                    : 'Merge PDF Files Online'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Combinez plusieurs fichiers PDF en un seul document. 100% gratuit, sécurisé et privé.'
+                    : 'Combine multiple PDF files into one document. 100% free, secure, and private.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-cyan-600" />
+                  <span className="text-sm font-medium text-cyan-700 dark:text-cyan-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <PDFMergeTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-blue-500/10 dark:shadow-blue-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <PDFMergeTool />
+              </div>
+            </Card>
           </div>
 
-        {/* SEO Content */}
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Fusionner des PDF en Ligne - Outil Gratuit et Sécurisé</h2>
-              <p>
-                Notre outil de fusion PDF en ligne vous permet de combiner plusieurs fichiers PDF en un seul document en quelques secondes.
-                Que vous ayez besoin de fusionner des contrats, des factures, des rapports ou des documents personnels, notre fusionneur PDF
-                gratuit traite tous vos fichiers localement dans votre navigateur, garantissant une confidentialité et une sécurité totales.
-              </p>
-
-              <h3>Comment Fusionner des PDF en 3 Étapes Simples</h3>
-              <ol>
-                <li><strong>Téléchargez vos fichiers PDF</strong> - Glissez-déposez ou cliquez pour sélectionner les fichiers PDF que vous souhaitez fusionner</li>
-                <li><strong>Réorganisez l'ordre</strong> - Faites glisser les fichiers pour les réorganiser dans l'ordre souhaité</li>
-                <li><strong>Fusionnez et téléchargez</strong> - Cliquez sur le bouton fusionner et téléchargez votre PDF combiné instantanément</li>
-              </ol>
-
-              <h3>Pourquoi Choisir Notre Outil de Fusion PDF ?</h3>
-              <ul>
-                <li><strong>100% Gratuit</strong> - Aucun frais caché, aucune inscription requise, aucune limite de fichiers</li>
-                <li><strong>Totalement Sécurisé</strong> - Vos fichiers ne quittent jamais votre appareil. Le traitement se fait entièrement dans votre navigateur</li>
-                <li><strong>Fonctionne Partout</strong> - Compatible avec tous les appareils : Windows, Mac, Linux, iOS, Android</li>
-                <li><strong>Rapide et Efficace</strong> - Fusionnez plusieurs PDF en quelques secondes sans compromis sur la qualité</li>
-                <li><strong>Préserve la Qualité</strong> - Maintient la qualité originale, la mise en forme et les hyperliens de vos documents</li>
-                <li><strong>Aucune Installation</strong> - Outil basé sur le navigateur, aucun logiciel à télécharger</li>
-              </ul>
-
-              <h3>Cas d'Utilisation Courants pour la Fusion de PDF</h3>
-              <p>Notre outil de fusion PDF est parfait pour :</p>
-              <ul>
-                <li><strong>Documents Professionnels</strong> - Combinez des contrats, des propositions et des rapports en un seul fichier professionnel</li>
-                <li><strong>Documents Académiques</strong> - Fusionnez des chapitres de thèse, des articles de recherche ou des devoirs</li>
-                <li><strong>Documents Légaux</strong> - Consolidez des documents juridiques, des preuves ou des dossiers</li>
-                <li><strong>Factures et Reçus</strong> - Regroupez plusieurs factures ou reçus pour la comptabilité</li>
-                <li><strong>Portfolios</strong> - Créez des portfolios complets en combinant vos meilleurs travaux</li>
-                <li><strong>Manuels et Guides</strong> - Fusionnez plusieurs chapitres ou sections en un seul document</li>
-              </ul>
-
-              <h3>Conseils pour Organiser vos PDF Fusionnés</h3>
-              <ul>
-                <li>Organisez vos fichiers dans un ordre logique avant de fusionner pour gagner du temps</li>
-                <li>Utilisez des noms de fichiers descriptifs pour identifier facilement vos documents</li>
-                <li>Envisagez d'ajouter une page de garde ou une table des matières pour les longs documents</li>
-                <li>Utilisez notre outil de numérotation de pages après la fusion pour une meilleure organisation</li>
-                <li>Vérifiez l'aperçu avant de télécharger pour vous assurer que tout est dans le bon ordre</li>
-              </ul>
-
-              <h3>Foire Aux Questions (FAQ)</h3>
-
-              <h4>Est-il sûr de fusionner des PDF en ligne ?</h4>
-              <p>
-                Oui, notre outil traite tous les fichiers localement dans votre navigateur. Vos fichiers ne quittent jamais votre appareil
-                et ne sont jamais téléchargés sur nos serveurs, garantissant une confidentialité et une sécurité totales.
-              </p>
-
-              <h4>Puis-je fusionner des PDF protégés par mot de passe ?</h4>
-              <p>
-                Notre outil peut fusionner des PDF protégés en écriture. Si un PDF est protégé par mot de passe pour l'ouverture,
-                vous devrez d'abord le déverrouiller avant de le fusionner.
-              </p>
-
-              <h4>Quelle est la taille maximale de fichier ?</h4>
-              <p>
-                Comme le traitement se fait dans votre navigateur, la limite dépend de la mémoire de votre appareil.
-                La plupart des appareils modernes peuvent gérer des fichiers jusqu'à 100 Mo sans problème.
-              </p>
-
-              <h4>La qualité de mes PDF sera-t-elle préservée ?</h4>
-              <p>
-                Absolument. Notre outil maintient la qualité originale de vos documents PDF, y compris les images haute résolution,
-                la mise en forme du texte et les hyperliens interactifs.
-              </p>
-
-              <h4>Combien de fichiers PDF puis-je fusionner à la fois ?</h4>
-              <p>
-                Il n'y a pas de limite stricte au nombre de fichiers que vous pouvez fusionner. La seule contrainte est la mémoire
-                disponible de votre appareil. La plupart des utilisateurs peuvent facilement fusionner 20 à 30 fichiers.
-              </p>
-
-              <h3>Outils PDF Connexes</h3>
-              <p>Découvrez nos autres outils PDF gratuits :</p>
-              <ul>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Diviser PDF</Link> - Séparez un PDF en plusieurs fichiers</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">compresser PDF</Link> - Réduisez la taille de vos fichiers PDF</li>
-                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organiser PDF</Link> - Réorganisez, supprimez ou faites pivoter les pages</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Numéroter PDF</Link> - Ajoutez des numéros de page à vos documents</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Merge PDF Files Online - Free and Secure Tool</h2>
-              <p>
-                Our online PDF merger tool allows you to combine multiple PDF files into a single document in seconds.
-                Whether you need to merge contracts, invoices, reports, or personal documents, our free PDF combiner
-                processes all your files locally in your browser, ensuring complete privacy and security.
-              </p>
-
-              <h3>How to Merge PDFs in 3 Simple Steps</h3>
-              <ol>
-                <li><strong>Upload your PDF files</strong> - Drag and drop or click to select the PDF files you want to merge</li>
-                <li><strong>Arrange the order</strong> - Drag files to reorder them in your desired sequence</li>
-                <li><strong>Merge and download</strong> - Click the merge button and download your combined PDF instantly</li>
-              </ol>
-
-              <h3>Why Choose Our PDF Merger Tool?</h3>
-              <ul>
-                <li><strong>100% Free</strong> - No hidden fees, no registration required, no file limits</li>
-                <li><strong>Completely Secure</strong> - Your files never leave your device. All processing happens entirely in your browser</li>
-                <li><strong>Works Everywhere</strong> - Compatible with all devices: Windows, Mac, Linux, iOS, Android</li>
-                <li><strong>Fast and Efficient</strong> - Merge multiple PDFs in seconds without compromising quality</li>
-                <li><strong>Preserves Quality</strong> - Maintains original quality, formatting, and hyperlinks in your documents</li>
-                <li><strong>No Installation</strong> - Browser-based tool, no software to download</li>
-              </ul>
-
-              <h3>Common Use Cases for Merging PDF Files</h3>
-              <p>Our PDF merge tool is perfect for:</p>
-              <ul>
-                <li><strong>Business Documents</strong> - Combine contracts, proposals, and reports into one professional file</li>
-                <li><strong>Academic Papers</strong> - Merge thesis chapters, research papers, or assignments</li>
-                <li><strong>Legal Documents</strong> - Consolidate legal documents, evidence, or case files</li>
-                <li><strong>Invoices and Receipts</strong> - Group multiple invoices or receipts for accounting</li>
-                <li><strong>Portfolios</strong> - Create comprehensive portfolios by combining your best work</li>
-                <li><strong>Manuals and Guides</strong> - Merge multiple chapters or sections into one document</li>
-              </ul>
-
-              <h3>Tips for Organizing Your Merged PDFs</h3>
-              <ul>
-                <li>Organize your files in a logical order before merging to save time</li>
-                <li>Use descriptive file names to easily identify your documents</li>
-                <li>Consider adding a cover page or table of contents for long documents</li>
-                <li>Use our page numbering tool after merging for better organization</li>
-                <li>Review the preview before downloading to ensure everything is in the right order</li>
-              </ul>
-
-              <h3>Frequently Asked Questions (FAQ)</h3>
-
-              <h4>Is it safe to merge PDFs online?</h4>
-              <p>
-                Yes, our tool processes all files locally in your browser. Your files never leave your device and are never
-                uploaded to our servers, ensuring complete privacy and security.
-              </p>
-
-              <h4>Can I merge password-protected PDFs?</h4>
-              <p>
-                Our tool can merge write-protected PDFs. If a PDF is password-protected for opening, you'll need to
-                unlock it first before merging.
-              </p>
-
-              <h4>What's the maximum file size?</h4>
-              <p>
-                Since processing happens in your browser, the limit depends on your device's memory. Most modern devices
-                can handle files up to 100MB without issues.
-              </p>
-
-              <h4>Will the quality of my PDFs be preserved?</h4>
-              <p>
-                Absolutely. Our tool maintains the original quality of your PDF documents, including high-resolution images,
-                text formatting, and interactive hyperlinks.
-              </p>
-
-              <h4>How many PDF files can I merge at once?</h4>
-              <p>
-                There's no strict limit on the number of files you can merge. The only constraint is your device's available memory.
-                Most users can easily merge 20-30 files.
-              </p>
-
-              <h3>Related PDF Tools</h3>
-              <p>Explore our other free PDF tools:</p>
-              <ul>
-                <li><Link href={`/${locale}/split-pdf`} className="text-primary hover:underline">Split PDF</Link> - Separate a PDF into multiple files</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compress PDF</Link> - Reduce the size of your PDF files</li>
-                <li><Link href={`/${locale}/organize-pdf`} className="text-primary hover:underline">Organize PDF</Link> - Rearrange, delete, or rotate pages</li>
-                <li><Link href={`/${locale}/page-numbering`} className="text-primary hover:underline">Number PDF</Link> - Add page numbers to your documents</li>
-              </ul>
-            </>
-          )}
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Glissez-déposez vos fichiers PDF ou cliquez pour les sélectionner'
+                    : 'Drag and drop your PDF files or click to select them',
+                  icon: '📁'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Organisez' : 'Arrange',
+                  description: locale === 'fr'
+                    ? 'Réorganisez l\'ordre des fichiers selon vos besoins'
+                    : 'Reorder files according to your needs',
+                  icon: '🔄'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Récupérez votre PDF fusionné instantanément'
+                    : 'Get your merged PDF instantly',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-blue-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-blue-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
         </div>
       </main>
 

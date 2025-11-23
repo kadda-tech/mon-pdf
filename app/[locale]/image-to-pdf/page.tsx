@@ -5,7 +5,9 @@ import {ImageToPDFTool} from "@/components/image-to-pdf-tool"
 import {usePathname, useRouter} from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
-import {SiteFooter} from "@/components/site-footer";
+import {SiteFooter} from "@/components/site-footer"
+import {FileImage, Sparkles, Zap, Shield, Clock} from "lucide-react"
+import {Card} from "@/components/ui/card"
 
 export default function ImageToPDFPage() {
   const t = useTranslations()
@@ -33,7 +35,7 @@ export default function ImageToPDFPage() {
       "@type": "ListItem",
       "position": 2,
       "name": locale === 'fr' ? "Image vers PDF" : "Image to PDF",
-      "item": `https://mon-pdf.fr/${locale}/${locale === 'fr' ? 'image-to-pdf' : 'image-to-pdf'}`
+      "item": `https://mon-pdf.fr/${locale}/image-to-pdf`
     }]
   }
 
@@ -147,217 +149,136 @@ export default function ImageToPDFPage() {
         {JSON.stringify(faqSchema)}
       </Script>
 
-      <div className="min-h-screen bg-background flex flex-col">
-        <main className="container mx-auto px-4 py-12 flex-1">
+      <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-orange-500/5 dark:bg-orange-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-yellow-500/5 dark:bg-yellow-500/10 rounded-full blur-3xl" />
+
+        <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
+          {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <ol className="flex items-center space-x-2 text-sm">
               <li>
-                <Link href={`/${locale}`} className="hover:text-foreground">
+                <Link
+                  href={`/${locale}/home`}
+                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                >
                   {locale === 'fr' ? 'Accueil' : 'Home'}
                 </Link>
               </li>
-              <li>/</li>
-              <li className="text-foreground font-medium">
+              <li className="text-muted-foreground">/</li>
+              <li className="text-foreground font-medium flex items-center gap-2">
+                <FileImage className="h-4 w-4 text-orange-600" />
                 {locale === 'fr' ? 'Image vers PDF' : 'Image to PDF'}
               </li>
             </ol>
           </nav>
 
-          
+          {/* Hero Section with Tool Icon */}
+          <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
+            <div className="flex flex-col items-center text-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-3xl blur-2xl opacity-30 animate-pulse" />
+                <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-500 to-yellow-500 shadow-2xl">
+                  <FileImage className="h-10 w-10 sm:h-12 sm:w-12 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
 
-          <div className="max-w-3xl mx-auto mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold text-center mb-3">
-              {locale === 'fr'
-                ? 'Convertir Images en PDF - JPG, PNG vers PDF Gratuit'
-                : 'Convert Images to PDF - JPG, PNG to PDF Free'}
-            </h1>
-            <p className="text-center text-muted-foreground mb-8">
-              {locale === 'fr'
-                ? 'Combinez plusieurs images en un seul PDF. Conversion rapide et gratuite. 100% sécurisé.'
-                : 'Combine multiple images into a single PDF. Fast and free conversion. 100% secure.'}
-            </p>
+              {/* Title */}
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-transparent">
+                  {locale === 'fr'
+                    ? 'Convertir Images en PDF'
+                    : 'Convert Images to PDF'}
+                </h1>
+                <p className="text-base sm:text-lg text-muted-foreground max-w-2xl">
+                  {locale === 'fr'
+                    ? 'Combinez plusieurs images en un seul PDF. Conversion rapide et gratuite. 100% sécurisé.'
+                    : 'Combine multiple images into a single PDF. Fast and free conversion. 100% secure.'}
+                </p>
+              </div>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-4 py-2">
+                  <Zap className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
+                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    {locale === 'fr' ? 'Gratuit' : 'Free'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <ImageToPDFTool />
+          {/* Main Tool Section */}
+          <div className="max-w-5xl mx-auto mb-12">
+            <Card className="border-2 border-border/50 shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/5 bg-gradient-to-br from-background to-muted/20">
+              <div className="p-6 sm:p-8">
+                <ImageToPDFTool />
+              </div>
+            </Card>
           </div>
 
-        <div className="max-w-4xl mx-auto mt-16 prose prose-slate dark:prose-invert">
-          {locale === 'fr' ? (
-            <>
-              <h2>Convertir Images en PDF - Outil Gratuit</h2>
-              <p>
-                Notre convertisseur d'images en PDF vous permet de transformer vos photos et images (JPG, PNG, JPEG, etc.) en documents PDF professionnels.
-                Que vous ayez besoin de combiner plusieurs photos en un seul fichier, de créer un album photo PDF, ou de convertir des captures d'écran
-                en documents partageables, notre outil gratuit traite tout localement dans votre navigateur pour une confidentialité totale.
-              </p>
+          {/* How It Works Section */}
+          <div className="max-w-4xl mx-auto mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+              {locale === 'fr' ? 'Comment ça marche' : 'How It Works'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  step: '1',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Upload',
+                  description: locale === 'fr'
+                    ? 'Sélectionnez une ou plusieurs images à convertir'
+                    : 'Select one or multiple images to convert',
+                  icon: '🖼️'
+                },
+                {
+                  step: '2',
+                  title: locale === 'fr' ? 'Organisez' : 'Arrange',
+                  description: locale === 'fr'
+                    ? 'Réorganisez les images selon vos besoins'
+                    : 'Rearrange images as needed',
+                  icon: '🔄'
+                },
+                {
+                  step: '3',
+                  title: locale === 'fr' ? 'Téléchargez' : 'Download',
+                  description: locale === 'fr'
+                    ? 'Obtenez votre document PDF combiné'
+                    : 'Get your combined PDF document',
+                  icon: '⬇️'
+                }
+              ].map((item) => (
+                <Card key={item.step} className="relative p-6 text-center group hover:shadow-lg transition-all duration-300 hover:border-orange-500/50">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-muted-foreground/10 group-hover:text-orange-500/20 transition-colors">
+                    {item.step}
+                  </div>
+                  <div className="text-4xl mb-4">{item.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </main>
 
-              <h3>Comment Convertir des Images en PDF</h3>
-              <ol>
-                <li><strong>Téléchargez vos images</strong> - Sélectionnez une ou plusieurs images à convertir</li>
-                <li><strong>Organisez l'ordre</strong> - Réorganisez les images selon vos besoins</li>
-                <li><strong>Téléchargez le PDF</strong> - Obtenez votre document PDF combiné</li>
-              </ol>
-
-              <h3>Formats d'Image Supportés</h3>
-              <ul>
-                <li><strong>JPG/JPEG</strong> - Format le plus courant pour les photos</li>
-                <li><strong>PNG</strong> - Idéal pour les captures d'écran et images avec transparence</li>
-                <li><strong>GIF</strong> - Images animées et simples</li>
-                <li><strong>BMP</strong> - Format Windows standard</li>
-                <li><strong>TIFF</strong> - Format haute qualité pour documents scannés</li>
-                <li><strong>WEBP</strong> - Format web moderne et compressé</li>
-              </ul>
-
-              <h3>Cas d'Utilisation</h3>
-              <ul>
-                <li><strong>Albums Photo</strong> - Créez des albums photo PDF à partager avec la famille</li>
-                <li><strong>Documents Scannés</strong> - Combinez plusieurs pages scannées en un seul PDF</li>
-                <li><strong>Présentations</strong> - Convertissez des images de diapositives en document PDF</li>
-                <li><strong>Portfolios</strong> - Créez des portfolios professionnels en PDF</li>
-                <li><strong>Factures et Reçus</strong> - Combinez des photos de factures en documents PDF</li>
-                <li><strong>Catalogues</strong> - Créez des catalogues produits à partir d'images</li>
-              </ul>
-
-              <h3>Avantages de Notre Outil</h3>
-              <ul>
-                <li><strong>Qualité Préservée</strong> - Les images conservent leur qualité d'origine</li>
-                <li><strong>Ordre Personnalisable</strong> - Réorganisez les images par glisser-déposer</li>
-                <li><strong>Plusieurs Images</strong> - Combinez autant d'images que vous voulez</li>
-                <li><strong>Tous Formats</strong> - Supporte JPG, PNG, GIF, BMP, TIFF, WEBP et plus</li>
-                <li><strong>100% Gratuit</strong> - Aucune limite, aucune inscription requise</li>
-                <li><strong>Traitement Local</strong> - Vos images ne quittent jamais votre navigateur</li>
-              </ul>
-
-              <h3>Conseils pour la Conversion</h3>
-              <ul>
-                <li><strong>Qualité d'Image</strong> - Utilisez des images haute résolution pour un meilleur résultat</li>
-                <li><strong>Orientation Uniforme</strong> - Assurez-vous que toutes les images ont la même orientation</li>
-                <li><strong>Taille Cohérente</strong> - Des images de taille similaire donnent un PDF plus professionnel</li>
-                <li><strong>Compression</strong> - Compressez vos images avant si le PDF final est trop volumineux</li>
-                <li><strong>Ordre Logique</strong> - Organisez vos images dans un ordre qui a du sens</li>
-              </ul>
-
-              <h3>Foire Aux Questions</h3>
-
-              <h4>Comment convertir des images en PDF ?</h4>
-              <p>
-                Téléchargez vos images (JPG, PNG, etc.), organisez-les dans l'ordre souhaité avec notre interface
-                glisser-déposer intuitive, et notre outil les combinera automatiquement en un seul fichier PDF
-                que vous pourrez télécharger immédiatement.
-              </p>
-
-              <h4>Puis-je convertir plusieurs images en un seul PDF ?</h4>
-              <p>
-                Oui, absolument ! Vous pouvez télécharger autant d'images que vous le souhaitez et les combiner
-                en un seul document PDF. Organisez-les simplement dans l'ordre désiré avant la conversion.
-                Il n'y a aucune limite au nombre d'images.
-              </p>
-
-              <h4>Quels formats d'image sont supportés ?</h4>
-              <p>
-                Notre outil supporte tous les formats d'image courants : JPG, JPEG, PNG, GIF, BMP, TIFF, WEBP
-                et plus encore. La qualité de l'image est préservée lors de la conversion en PDF, garantissant
-                un résultat professionnel.
-              </p>
-
-              <h3>Outils Connexes</h3>
-              <ul>
-                <li><Link href={`/${locale}/pdf-to-images`} className="text-primary hover:underline">PDF vers Images</Link> - Convertir PDF en images</li>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Fusionner PDF</Link> - Combiner plusieurs PDF</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compresser PDF</Link> - Réduire la taille du PDF</li>
-              </ul>
-            </>
-          ) : (
-            <>
-              <h2>Convert Images to PDF - Free Tool</h2>
-              <p>
-                Our image to PDF converter allows you to transform your photos and images (JPG, PNG, JPEG, etc.) into professional PDF documents.
-                Whether you need to combine multiple photos into a single file, create a photo album PDF, or convert screenshots
-                into shareable documents, our free tool processes everything locally in your browser for complete privacy.
-              </p>
-
-              <h3>How to Convert Images to PDF</h3>
-              <ol>
-                <li><strong>Upload your images</strong> - Select one or multiple images to convert</li>
-                <li><strong>Arrange the order</strong> - Reorganize images as needed</li>
-                <li><strong>Download the PDF</strong> - Get your combined PDF document</li>
-              </ol>
-
-              <h3>Supported Image Formats</h3>
-              <ul>
-                <li><strong>JPG/JPEG</strong> - Most common format for photos</li>
-                <li><strong>PNG</strong> - Ideal for screenshots and images with transparency</li>
-                <li><strong>GIF</strong> - Animated and simple images</li>
-                <li><strong>BMP</strong> - Standard Windows format</li>
-                <li><strong>TIFF</strong> - High-quality format for scanned documents</li>
-                <li><strong>WEBP</strong> - Modern compressed web format</li>
-              </ul>
-
-              <h3>Use Cases</h3>
-              <ul>
-                <li><strong>Photo Albums</strong> - Create PDF photo albums to share with family</li>
-                <li><strong>Scanned Documents</strong> - Combine multiple scanned pages into one PDF</li>
-                <li><strong>Presentations</strong> - Convert slide images into PDF documents</li>
-                <li><strong>Portfolios</strong> - Create professional portfolios in PDF format</li>
-                <li><strong>Invoices and Receipts</strong> - Combine invoice photos into PDF documents</li>
-                <li><strong>Catalogs</strong> - Create product catalogs from images</li>
-              </ul>
-
-              <h3>Benefits of Our Tool</h3>
-              <ul>
-                <li><strong>Quality Preserved</strong> - Images maintain their original quality</li>
-                <li><strong>Customizable Order</strong> - Reorganize images by drag and drop</li>
-                <li><strong>Multiple Images</strong> - Combine as many images as you want</li>
-                <li><strong>All Formats</strong> - Supports JPG, PNG, GIF, BMP, TIFF, WEBP and more</li>
-                <li><strong>100% Free</strong> - No limits, no registration required</li>
-                <li><strong>Local Processing</strong> - Your images never leave your browser</li>
-              </ul>
-
-              <h3>Conversion Tips</h3>
-              <ul>
-                <li><strong>Image Quality</strong> - Use high-resolution images for better results</li>
-                <li><strong>Uniform Orientation</strong> - Ensure all images have the same orientation</li>
-                <li><strong>Consistent Size</strong> - Similar-sized images create a more professional PDF</li>
-                <li><strong>Compression</strong> - Compress your images beforehand if the final PDF is too large</li>
-                <li><strong>Logical Order</strong> - Arrange your images in a meaningful sequence</li>
-              </ul>
-
-              <h3>Frequently Asked Questions</h3>
-
-              <h4>How to convert images to PDF?</h4>
-              <p>
-                Upload your images (JPG, PNG, etc.), arrange them in the desired order with our intuitive
-                drag-and-drop interface, and our tool will automatically combine them into a single PDF file
-                you can download immediately.
-              </p>
-
-              <h4>Can I convert multiple images to one PDF?</h4>
-              <p>
-                Yes, absolutely! You can upload as many images as you want and combine them into a single
-                PDF document. Simply arrange them in the desired order before conversion. There is no limit
-                to the number of images.
-              </p>
-
-              <h4>What image formats are supported?</h4>
-              <p>
-                Our tool supports all common image formats: JPG, JPEG, PNG, GIF, BMP, TIFF, WEBP and more.
-                Image quality is preserved during PDF conversion, ensuring professional results.
-              </p>
-
-              <h3>Related Tools</h3>
-              <ul>
-                <li><Link href={`/${locale}/pdf-to-images`} className="text-primary hover:underline">PDF to Images</Link> - Convert PDF to images</li>
-                <li><Link href={`/${locale}/merge-pdf`} className="text-primary hover:underline">Merge PDF</Link> - Combine multiple PDFs</li>
-                <li><Link href={`/${locale}/compress-pdf`} className="text-primary hover:underline">Compress PDF</Link> - Reduce PDF file size</li>
-              </ul>
-            </>
-          )}
-        </div>
-      </main>
-
-        <SiteFooter locale={pathname.split('/')[1] || 'en'} />
-    </div>
+        <SiteFooter locale={locale} />
+      </div>
     </>
   )
 }

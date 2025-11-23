@@ -1,10 +1,9 @@
 "use client"
 
 import type React from "react"
-
-import { useCallback } from "react"
-import { Upload, FileText, ImageIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import {useCallback} from "react"
+import {FileText, ImageIcon, Upload} from "lucide-react"
+import {cn} from "@/lib/utils"
 
 interface FileUploadZoneProps {
   onFilesSelected: (files: FileList) => void
@@ -60,7 +59,6 @@ export function FileUploadZone({
       onDragOver={handleDragOver}
       className={cn(
         "relative border-2 border-dashed rounded-xl p-12 text-center",
-        "hover:border-foreground/50 hover:bg-accent/50 transition-colors cursor-pointer",
         "border-border bg-muted/20",
       )}
     >
