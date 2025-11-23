@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import {LanguageSwitcher} from "@/components/language-switcher"
 import {BookmarkButton} from "@/components/bookmark-button"
+import {MobileNav} from "@/components/mobile-nav"
 import {Home, Sparkles} from "lucide-react"
 import {Button} from "@/components/ui/button"
 
@@ -20,41 +21,47 @@ export function SiteHeader() {
 
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between py-3 sm:py-4">
-          {/* Logo Section */}
-          <Link
-            href={`/${locale}`}
-            className="flex items-center gap-3 group relative"
-          >
-            {/* Mobile: Show icon only */}
-            <div className="block sm:hidden">
-              <Image
-                src="/icon.png"
-                alt={locale === 'fr'
-                  ? 'Mon PDF'
-                  : 'Mon PDF'
-                }
-                priority
-                width={40}
-                height={40}
-                className="transition-transform group-hover:scale-105 duration-300"
-              />
-            </div>
+          {/* Mobile Menu & Logo Section */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Mobile Navigation Menu - Only show on feature pages, not on home */}
+            {!isHomePage && <MobileNav />}
 
-            {/* Desktop: Show full logo */}
-            <div className="hidden sm:block">
-              <Image
-                src="/logo.png"
-                alt={locale === 'fr'
-                  ? 'Mon PDF - Outils PDF Gratuits en Ligne'
-                  : 'Mon PDF - Free Online PDF Tools'
-                }
-                priority
-                width={250}
-                height={120}
-                className="transition-transform group-hover:scale-105 duration-300"
-              />
-            </div>
-          </Link>
+            {/* Logo */}
+            <Link
+              href={`/${locale}`}
+              className="flex items-center gap-3 group relative"
+            >
+              {/* Mobile: Show icon only (below md breakpoint) */}
+              <div className="block md:hidden">
+                <Image
+                  src="/icon.png"
+                  alt={locale === 'fr'
+                    ? 'Mon PDF'
+                    : 'Mon PDF'
+                  }
+                  priority
+                  width={40}
+                  height={40}
+                  className="transition-transform group-hover:scale-105 duration-300"
+                />
+              </div>
+
+              {/* Desktop: Show full logo (md breakpoint and above) */}
+              <div className="hidden md:block">
+                <Image
+                  src="/logo.png"
+                  alt={locale === 'fr'
+                    ? 'Mon PDF - Outils PDF Gratuits en Ligne'
+                    : 'Mon PDF - Free Online PDF Tools'
+                  }
+                  priority
+                  width={250}
+                  height={120}
+                  className="transition-transform group-hover:scale-105 duration-300"
+                />
+              </div>
+            </Link>
+          </div>
 
           {/* Navigation & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
