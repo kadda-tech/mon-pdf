@@ -3,10 +3,9 @@
 import {useTranslations} from 'next-intl'
 import {ImageToPDFTool} from "@/components/image-to-pdf-tool"
 import {usePathname, useRouter} from 'next/navigation'
-import Link from 'next/link'
 import Script from 'next/script'
 import {SiteFooter} from "@/components/site-footer"
-import {FileImage, Sparkles, Zap, Shield, Clock} from "lucide-react"
+import {FileImage} from "lucide-react"
 import {Card} from "@/components/ui/card"
 
 export default function ImageToPDFPage() {
@@ -155,25 +154,6 @@ export default function ImageToPDFPage() {
         <div className="absolute bottom-20 left-10 w-96 h-96 bg-yellow-500/5 dark:bg-yellow-500/10 rounded-full blur-3xl" />
 
         <main className="container mx-auto px-4 py-8 sm:py-12 flex-1 relative z-10">
-          {/* Breadcrumbs */}
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center space-x-2 text-sm">
-              <li>
-                <Link
-                  href={`/${locale}/home`}
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                >
-                  {locale === 'fr' ? 'Accueil' : 'Home'}
-                </Link>
-              </li>
-              <li className="text-muted-foreground">/</li>
-              <li className="text-foreground font-medium flex items-center gap-2">
-                <FileImage className="h-4 w-4 text-orange-600" />
-                {locale === 'fr' ? 'Image vers PDF' : 'Image to PDF'}
-              </li>
-            </ol>
-          </nav>
-
           {/* Hero Section with Tool Icon */}
           <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
             <div className="flex flex-col items-center text-center gap-6">
@@ -198,38 +178,14 @@ export default function ImageToPDFPage() {
                     : 'Combine multiple images into a single PDF. Fast and free conversion. 100% secure.'}
                 </p>
               </div>
-
-              {/* Feature Pills */}
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <div className="flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-4 py-2">
-                  <Zap className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                    {locale === 'fr' ? 'Ultra rapide' : 'Lightning Fast'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 rounded-full bg-green-500/10 border border-green-500/20 px-4 py-2">
-                  <Shield className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-700 dark:text-green-300">
-                    {locale === 'fr' ? '100% Sécurisé' : '100% Secure'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-4 py-2">
-                  <Clock className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    {locale === 'fr' ? 'Gratuit' : 'Free'}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Main Tool Section */}
           <div className="max-w-5xl mx-auto mb-12">
-            <Card className="border-2 border-border/50 shadow-2xl shadow-orange-500/10 dark:shadow-orange-500/5 bg-gradient-to-br from-background to-muted/20">
               <div className="p-6 sm:p-8">
                 <ImageToPDFTool />
               </div>
-            </Card>
           </div>
 
           {/* How It Works Section */}

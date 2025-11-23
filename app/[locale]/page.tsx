@@ -1,32 +1,127 @@
 "use client"
 
-import {usePathname, useRouter} from 'next/navigation'
-import {Button} from "@/components/ui/button"
-import {ArrowRight, Sparkles} from "lucide-react"
+import {
+  Combine,
+  FileImage,
+  FileText,
+  FileType,
+  Hash,
+  ImageIcon,
+  Package,
+  Scan,
+  Scissors,
+  SendToBack,
+  Sparkles
+} from "lucide-react"
+import {useTranslations} from 'next-intl'
+import {usePathname} from 'next/navigation'
+import {ColorfulToolCard} from "@/components/colorful-tool-card"
+import {SiteFooter} from "@/components/site-footer"
 import Image from "next/image";
 
-export default function GetStartedPage() {
-  const router = useRouter()
+export default function Home() {
+  const t = useTranslations()
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'en'
 
-  const handleGetStarted = () => {
-    router.push(`/${locale}/home`)
-  }
+  const tools = [
+    {
+      id: "split",
+      path: "split-pdf",
+      icon: Scissors,
+      title: t('tools.split.title'),
+      description: t('tools.split.description'),
+      color: "purple" as const,
+      isBeta: false,
+    },
+    {
+      id: "merge",
+      path: "merge-pdf",
+      icon: Combine,
+      title: t('tools.merge.title'),
+      description: t('tools.merge.description'),
+      color: "blue" as const,
+      isBeta: false,
+    },
+    {
+      id: "organize-pdf",
+      path: "organize-pdf",
+      icon: SendToBack,
+      title: t('tools.organizePdf.title'),
+      description: t('tools.organizePdf.description'),
+      color: "teal" as const,
+      isBeta: false,
+    },
+    {
+      id: "compress-pdf",
+      path: "compress-pdf",
+      icon: Package,
+      title: t('tools.compressPdf.title'),
+      description: t('tools.compressPdf.description'),
+      color: "green" as const,
+      isBeta: false,
+    },
+    {
+      id: "image-to-pdf",
+      path: "image-to-pdf",
+      icon: FileImage,
+      title: t('tools.imageToPdf.title'),
+      description: t('tools.imageToPdf.description'),
+      color: "orange" as const,
+      isBeta: false,
+    },
+    {
+      id: "pdf-to-images",
+      path: "pdf-to-images",
+      icon: ImageIcon,
+      title: t('tools.pdfToImages.title'),
+      description: t('tools.pdfToImages.description'),
+      color: "pink" as const,
+      isBeta: false,
+    },
+    {
+      id: "page-numbering",
+      path: "page-numbering",
+      icon: Hash,
+      title: t('tools.pageNumbering.title'),
+      description: t('tools.pageNumbering.description'),
+      color: "blue" as const,
+      isBeta: false,
+    },
+    {
+      id: "scan-pdf",
+      path: "scan-pdf",
+      icon: Scan,
+      title: t('tools.scanPdf.title'),
+      description: t('tools.scanPdf.description'),
+      color: "teal" as const,
+      isBeta: false,
+    },
+    {
+      id: "pdf-to-word",
+      path: "pdf-to-word",
+      icon: FileType,
+      title: t('tools.pdfToWord.title'),
+      description: t('tools.pdfToWord.description'),
+      color: "purple" as const,
+      isBeta: false,
+    },
+    {
+      id: "ocr",
+      path: "ocr",
+      icon: FileText,
+      title: t('tools.ocr.title'),
+      description: t('tools.ocr.description'),
+      color: "orange" as const,
+      isBeta: true,
+    },
+  ]
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-orange-950/20">
-      {/* Animated background gradients */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-400/30 dark:bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-400/30 dark:bg-pink-600/20 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-400/20 dark:bg-orange-600/10 rounded-full blur-3xl animate-pulse delay-2000" />
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center gap-8 px-4 max-w-4xl mx-auto text-center">
-        {/* Main heading */}
-        <div className="flex flex-col items-center gap-10">
+    <div className="min-h-screen bg-background flex flex-col pt-10">
+      <main className="container mx-auto flex-1">
+        {/* Hero Section */}
+        <div className="flex flex-col items-center gap-10 text-center mb-12 sm:mb-16 mx-auto">
           <Image
               src="/logo.png"
               alt={locale === 'fr'
@@ -34,81 +129,103 @@ export default function GetStartedPage() {
                   : 'Mon PDF - Free Online PDF Tools'
               }
               priority
-              width={550}
+              width={350}
               height={100}
           />
-          <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-foreground/80 text-balance">
-            {locale === 'fr'
-              ? 'Vos Outils PDF Professionnels'
-              : 'Your Professional PDF Toolkit'}
-          </p>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto text-balance leading-relaxed">
-            {locale === 'fr'
-              ? 'Fusionnez, divisez, convertissez et modifiez vos PDF avec des outils puissants qui fonctionnent entièrement dans votre navigateur. Rapide, sécurisé et complètement privé.'
-              : 'Split, merge, convert, and edit your PDFs with powerful tools that work entirely in your browser. Fast, secure, and completely private.'}
-          </p>
+          <div className="flex flex-col">
+            <h1 className="text-2xl sm:text-5xl lg:text-4xl font-bold mb-4 sm:mb-6 text-balance leading-tight">
+              {t('home.title')}
+            </h1>
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground text-balance mx-auto leading-relaxed">
+              {t('home.subtitle')}
+            </p>
+          </div>
+
+          {/* Privacy badges */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+            <div className="flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 shadow-sm">
+              <div className="h-2 w-2 rounded-full bg-green-500" />
+              <span className="text-xs sm:text-sm font-medium">
+                {locale === 'fr' ? 'Pas de téléchargement' : 'No Upload'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 shadow-sm">
+              <div className="h-2 w-2 rounded-full bg-blue-500" />
+              <span className="text-xs sm:text-sm font-medium">
+                {locale === 'fr' ? '100% Privé' : '100% Private'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 shadow-sm">
+              <div className="h-2 w-2 rounded-full bg-purple-500" />
+              <span className="text-xs sm:text-sm font-medium">
+                {locale === 'fr' ? 'Gratuit pour toujours' : 'Free Forever'}
+              </span>
+            </div>
+          </div>
         </div>
 
-        {/* Privacy badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          <div className="flex items-center gap-2 rounded-full bg-card/80 backdrop-blur-sm border border-border px-4 py-2 shadow-lg">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
-            <span className="text-xs sm:text-sm font-medium">
-              {locale === 'fr' ? 'Pas de téléchargement' : 'No Upload'}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 rounded-full bg-card/80 backdrop-blur-sm border border-border px-4 py-2 shadow-lg">
-            <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-xs sm:text-sm font-medium">
-              {locale === 'fr' ? '100% Privé' : '100% Private'}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 rounded-full bg-card/80 backdrop-blur-sm border border-border px-4 py-2 shadow-lg">
-            <div className="h-2 w-2 rounded-full bg-purple-500" />
-            <span className="text-xs sm:text-sm font-medium">
-              {locale === 'fr' ? 'Gratuit pour toujours' : 'Free Forever'}
-            </span>
-          </div>
+        {/* Tools Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto mb-16 px-4">
+          {tools.map((tool) => (
+            <ColorfulToolCard
+              key={tool.id}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              href={`/${locale}/${tool.path}`}
+              color={tool.color}
+              isBeta={tool.isBeta}
+            />
+          ))}
         </div>
 
-        {/* Get Started Button */}
-        <Button
-          onClick={handleGetStarted}
-          size="lg"
-          className="cursor-pointer text-lg px-8 py-6 h-auto rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-2xl shadow-purple-500/50 hover:shadow-purple-600/60 hover:scale-105 transition-all duration-200 group"
-        >
-          {locale === 'fr' ? 'Commencer' : 'Get Started'}
-          <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-        </Button>
-
-        {/* Feature highlights */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 max-w-3xl">
-          <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10">
-              <Sparkles className="h-6 w-6 text-purple-600" />
+        {/* Features section */}
+        <div className="mt-16 sm:mt-24 max-w-4xl mx-auto pb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/10">
+                <Sparkles className="h-7 w-7 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
+                {locale === 'fr' ? 'Ultra Rapide' : 'Lightning Fast'}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {locale === 'fr'
+                  ? 'Traitez vos PDF instantanément avec notre moteur basé navigateur'
+                  : 'Process PDFs instantly with our browser-based engine'}
+              </p>
             </div>
-            <span className="text-sm font-medium text-center">
-              {locale === 'fr' ? '10+ Outils PDF' : '10+ PDF Tools'}
-            </span>
-          </div>
-          <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10">
-              <Sparkles className="h-6 w-6 text-blue-600" />
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10">
+                <Sparkles className="h-7 w-7 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
+                {locale === 'fr' ? 'Totalement Privé' : 'Fully Private'}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {locale === 'fr'
+                  ? 'Vos fichiers ne quittent jamais votre appareil, jamais'
+                  : 'Your files never leave your device, ever'}
+              </p>
             </div>
-            <span className="text-sm font-medium text-center">
-              {locale === 'fr' ? 'Traitement Instantané' : 'Instant Processing'}
-            </span>
-          </div>
-          <div className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-500/10">
-              <Sparkles className="h-6 w-6 text-pink-600" />
+            <div className="text-center">
+              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-500/10">
+                <Sparkles className="h-7 w-7 text-teal-600" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">
+                {locale === 'fr' ? 'Sans Limites' : 'No Limits'}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {locale === 'fr'
+                  ? 'Utilisez tous les outils de manière illimitée, complètement gratuit'
+                  : 'Use all tools unlimited times, completely free'}
+              </p>
             </div>
-            <span className="text-sm font-medium text-center">
-              {locale === 'fr' ? 'Aucune Inscription' : 'No Registration'}
-            </span>
           </div>
         </div>
-      </div>
+      </main>
+
+      <SiteFooter locale={locale} />
     </div>
   )
 }

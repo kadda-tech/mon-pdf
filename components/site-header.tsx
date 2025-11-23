@@ -11,7 +11,7 @@ import {Button} from "@/components/ui/button"
 export function SiteHeader() {
   const pathname = usePathname()
   const locale = pathname.split('/')[1] || 'en'
-  const isHomePage = pathname.endsWith('/home')
+  const isHomePage = pathname.endsWith('/home') || pathname === `/${locale}` || pathname === `/${locale}/`
 
   return (
     <header className="border-b border-border/40 backdrop-blur-xl bg-background/80 sticky top-0 z-50">
@@ -22,9 +22,26 @@ export function SiteHeader() {
         <div className="flex items-center justify-between py-3 sm:py-4">
           {/* Logo Section */}
           <Link
-            href={`/${locale}/home`}
+            href={`/${locale}`}
             className="flex items-center gap-3 group relative"
           >
+            {/* Mobile: Show icon only */}
+            <div className="block sm:hidden">
+              <Image
+                src="/icon.png"
+                alt={locale === 'fr'
+                  ? 'Mon PDF'
+                  : 'Mon PDF'
+                }
+                priority
+                width={40}
+                height={40}
+                className="transition-transform group-hover:scale-105 duration-300"
+              />
+            </div>
+
+            {/* Desktop: Show full logo */}
+            <div className="hidden sm:block">
               <Image
                 src="/logo.png"
                 alt={locale === 'fr'
@@ -34,7 +51,9 @@ export function SiteHeader() {
                 priority
                 width={250}
                 height={120}
+                className="transition-transform group-hover:scale-105 duration-300"
               />
+            </div>
           </Link>
 
           {/* Navigation & Actions */}
@@ -47,7 +66,7 @@ export function SiteHeader() {
                 size="sm"
                 className="hidden sm:flex items-center gap-2 hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-300"
               >
-                <Link href={`/${locale}/home`}>
+                <Link href={`/${locale}`}>
                   <Home className="h-4 w-4" />
                   <span className="text-sm font-medium">
                     {locale === 'fr' ? 'Accueil' : 'Home'}
