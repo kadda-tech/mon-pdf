@@ -101,7 +101,7 @@ export function MobileNav() {
       title: t('tools.pdfToWord.title'),
       color: 'text-violet-600',
       bgColor: 'bg-violet-500/10',
-      isBeta: false,
+      isBeta: true,
     },
     {
       id: 'ocr',

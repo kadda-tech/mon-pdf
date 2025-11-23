@@ -155,12 +155,6 @@ export default function Home() {
                 {locale === 'fr' ? '100% Privé' : '100% Private'}
               </span>
             </div>
-            <div className="flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 shadow-sm">
-              <div className="h-2 w-2 rounded-full bg-purple-500" />
-              <span className="text-xs sm:text-sm font-medium">
-                {locale === 'fr' ? 'Gratuit pour toujours' : 'Free Forever'}
-              </span>
-            </div>
           </div>
         </div>
 

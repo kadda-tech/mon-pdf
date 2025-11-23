@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {useTranslations} from 'next-intl'
-import {Lock, Shield, Zap} from 'lucide-react'
+import {Lock, Shield} from 'lucide-react'
 import Image from "next/image";
 
 interface SiteFooterProps {
@@ -63,10 +63,6 @@ export function SiteFooter({ locale }: SiteFooterProps) {
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Lock className="h-3.5 w-3.5 text-blue-600" />
                 <span>{locale === 'fr' ? 'Confidentialité totale' : 'Complete Privacy'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Zap className="h-3.5 w-3.5 text-purple-600" />
-                <span>{locale === 'fr' ? 'Gratuit pour toujours' : 'Free Forever'}</span>
               </div>
             </div>
           </div>
