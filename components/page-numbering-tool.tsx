@@ -97,40 +97,33 @@ export function PageNumberingTool() {
     try {
       setProgress({
         stage: 'processing',
-        percentage: 0,
+        percentage: 50,
         message: t('tools.pageNumbering.processing'),
       });
       setError(null);
 
-      // Parse color
-      const colorHex = fontColor.replace('#', '');
-      const r = parseInt(colorHex.substring(0, 2), 16) / 255;
-      const g = parseInt(colorHex.substring(2, 4), 16) / 255;
-      const b = parseInt(colorHex.substring(4, 6), 16) / 255;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('position', position);
+      formData.append('style', style);
+      formData.append('fontSize', fontSize.toString());
+      formData.append('startNumber', startNumber.toString());
+      if (prefix) formData.append('prefix', prefix);
+      if (suffix) formData.append('suffix', suffix);
 
-      const options: PageNumberingOptions = {
-        position,
-        style,
-        fontSize,
-        startPage,
-        startNumber,
-        prefix,
-        suffix,
-        fontColor: { r, g, b },
-        marginX,
-        marginY,
-      };
-
-      const result = await addPageNumbers(file, options, (current, total) => {
-        const percentage = Math.round((current / total) * 100);
-        setProgress({
-          stage: 'processing',
-          currentPage: current,
-          totalPages: total,
-          percentage,
-          message: t('tools.pageNumbering.processingPage', { current, total }),
-        });
+      const response = await fetch('/api/page-numbering', {
+        method: 'POST',
+        body: formData,
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to add page numbers');
+      }
+
+      const blob = await response.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+      const result = new Uint8Array(arrayBuffer);
 
       setProcessedPdf(result);
       setProgress({

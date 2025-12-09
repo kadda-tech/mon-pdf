@@ -1,6 +1,5 @@
 "use client"
 
-import { PDFDocument } from "pdf-lib"
 import { useTranslations } from 'next-intl'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -31,41 +30,22 @@ export function ImageToPDFTool() {
     dispatch(setProcessing(true))
 
     try {
-      const pdfDoc = await PDFDocument.create()
+      const formData = new FormData()
+      files.forEach((file, index) => {
+        formData.append(`image${index}`, file.file)
+      })
 
-      for (const file of files) {
-        const arrayBuffer = await file.file.arrayBuffer()
-        let image
+      const response = await fetch('/api/image-to-pdf', {
+        method: 'POST',
+        body: formData,
+      })
 
-        if (file.file.type === "image/png") {
-          image = await pdfDoc.embedPng(arrayBuffer)
-        } else if (file.file.type === "image/jpeg" || file.file.type === "image/jpg") {
-          image = await pdfDoc.embedJpg(arrayBuffer)
-        } else {
-          continue
-        }
-
-        const page = pdfDoc.addPage()
-        const { width, height } = image.scale(1)
-
-        // Scale image to fit page
-        const pageWidth = page.getWidth()
-        const pageHeight = page.getHeight()
-        const scale = Math.min(pageWidth / width, pageHeight / height)
-
-        const scaledWidth = width * scale
-        const scaledHeight = height * scale
-
-        page.drawImage(image, {
-          x: (pageWidth - scaledWidth) / 2,
-          y: (pageHeight - scaledHeight) / 2,
-          width: scaledWidth,
-          height: scaledHeight,
-        })
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to convert images to PDF')
       }
 
-      const pdfBytes = await pdfDoc.save()
-      const blob = new Blob([pdfBytes], { type: "application/pdf" })
+      const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
@@ -76,6 +56,7 @@ export function ImageToPDFTool() {
       dispatch(clearFiles())
     } catch (error) {
       console.error("Error converting images to PDF:", error)
+      alert("Failed to convert images to PDF. Please try again.")
     } finally {
       dispatch(setProcessing(false))
     }

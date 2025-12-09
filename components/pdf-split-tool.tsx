@@ -73,20 +73,25 @@ export function PDFSplitTool() {
 
     try {
       const file = files[0].file
-      const arrayBuffer = await file.arrayBuffer()
-      const pdfDoc = await PDFDocument.load(arrayBuffer)
-
-      // Create new PDF with selected pages
-      const newPdf = await PDFDocument.create()
       const sortedPages = Array.from(selectedPages).sort((a, b) => a - b)
+      const pagesParam = sortedPages.join(',')
 
-      for (const pageNum of sortedPages) {
-        const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageNum - 1])
-        newPdf.addPage(copiedPage)
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('pages', pagesParam)
+      formData.append('mode', 'pages')
+
+      const response = await fetch('/api/split-pdf', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to split PDF')
       }
 
-      const pdfBytes = await newPdf.save()
-      const blob = new Blob([pdfBytes], { type: "application/pdf" })
+      const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
@@ -95,6 +100,7 @@ export function PDFSplitTool() {
       URL.revokeObjectURL(url)
     } catch (error) {
       console.error("Error downloading selected pages:", error)
+      alert("Failed to split PDF. Please try again.")
     } finally {
       dispatch(setProcessing(false))
     }
@@ -107,38 +113,32 @@ export function PDFSplitTool() {
 
     try {
       const file = files[0].file
-      const arrayBuffer = await file.arrayBuffer()
-      const pdfDoc = await PDFDocument.load(arrayBuffer)
 
-      // Parse page range (e.g., "1-3,5,7-9")
-      const ranges = pageRange.split(",").map((r) => r.trim())
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('pages', pageRange)
+      formData.append('mode', 'ranges')
 
-      for (const range of ranges) {
-        const newPdf = await PDFDocument.create()
+      const response = await fetch('/api/split-pdf', {
+        method: 'POST',
+        body: formData,
+      })
 
-        if (range.includes("-")) {
-          const [start, end] = range.split("-").map((n) => Number.parseInt(n.trim()))
-          for (let i = start - 1; i < end; i++) {
-            const [copiedPage] = await newPdf.copyPages(pdfDoc, [i])
-            newPdf.addPage(copiedPage)
-          }
-        } else {
-          const pageNum = Number.parseInt(range) - 1
-          const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageNum])
-          newPdf.addPage(copiedPage)
-        }
-
-        const pdfBytes = await newPdf.save()
-        const blob = new Blob([pdfBytes], { type: "application/pdf" })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = `split-${range}-${files[0].name}`
-        a.click()
-        URL.revokeObjectURL(url)
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to split PDF')
       }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `split-${pageRange.replace(/,/g, '-')}-${files[0].name}`
+      a.click()
+      URL.revokeObjectURL(url)
     } catch (error) {
       console.error("Error splitting PDF:", error)
+      alert("Failed to split PDF. Please try again.")
     } finally {
       dispatch(setProcessing(false))
     }

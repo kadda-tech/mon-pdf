@@ -174,20 +174,27 @@ export function PDFOrganizeTool() {
     setError(null)
 
     try {
-      const arrayBuffer = await file.arrayBuffer()
-      const pdfDoc = await PDFDocument.load(arrayBuffer)
-      const newPdf = await PDFDocument.create()
+      // Get page numbers in the current order, skipping deleted ones
+      const pageOrder = pages
+        .filter(p => !p.isDeleted)
+        .map(p => p.pageNumber)
+        .join(',')
 
-      // Add pages in the current order, skipping deleted ones
-      for (const pageData of pages) {
-        if (!pageData.isDeleted) {
-          const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageData.pageNumber - 1])
-          newPdf.addPage(copiedPage)
-        }
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('pageOrder', pageOrder)
+
+      const response = await fetch('/api/organize-pdf', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to organize PDF')
       }
 
-      const pdfBytes = await newPdf.save()
-      const blob = new Blob([pdfBytes], { type: "application/pdf" })
+      const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const link = document.createElement("a")
       link.href = url

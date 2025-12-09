@@ -39,17 +39,22 @@ export function PDFMergeTool() {
     dispatch(setProcessing(true))
 
     try {
-      const mergedPdf = await PDFDocument.create()
+      const formData = new FormData()
+      files.forEach((file, index) => {
+        formData.append(`file${index}`, file.file)
+      })
 
-      for (const file of files) {
-        const arrayBuffer = await file.file.arrayBuffer()
-        const pdfDoc = await PDFDocument.load(arrayBuffer)
-        const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices())
-        copiedPages.forEach((page) => mergedPdf.addPage(page))
+      const response = await fetch('/api/merge-pdf', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to merge PDFs')
       }
 
-      const pdfBytes = await mergedPdf.save()
-      const blob = new Blob([pdfBytes], { type: "application/pdf" })
+      const blob = await response.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
@@ -60,6 +65,7 @@ export function PDFMergeTool() {
       dispatch(clearFiles())
     } catch (error) {
       console.error("Error merging PDFs:", error)
+      alert("Failed to merge PDFs. Please try again.")
     } finally {
       dispatch(setProcessing(false))
     }

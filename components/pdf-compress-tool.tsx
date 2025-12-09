@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { PDFDocument } from "pdf-lib"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTranslations } from 'next-intl'
@@ -31,73 +30,29 @@ export function PDFCompressTool() {
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i]
   }
 
-  const compressPDF = async (arrayBuffer: ArrayBuffer, qualityLevel: QualityLevel): Promise<Uint8Array> => {
-    // Load PDF with pdfjs to extract and compress images
-    const pdfjsLib = await import("pdfjs-dist")
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`
-
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
-    const pdf = await loadingTask.promise
-
-    // Create a new PDF document
-    const pdfDoc = await PDFDocument.create()
-
-    // Determine image quality based on compression level
-    const imageQuality = qualityLevel === "high" ? 0.9 : qualityLevel === "medium" ? 0.7 : 0.5
-    const scale = qualityLevel === "high" ? 1.0 : qualityLevel === "medium" ? 0.85 : 0.7
-
-    // Process each page
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i)
-      const viewport = page.getViewport({ scale })
-
-      // Render page to canvas
-      const canvas = document.createElement("canvas")
-      const context = canvas.getContext("2d")!
-      canvas.width = viewport.width
-      canvas.height = viewport.height
-
-      await page.render({
-        canvasContext: context,
-        viewport: viewport,
-      }).promise
-
-      // Convert canvas to compressed JPEG
-      const imageDataUrl = canvas.toDataURL("image/jpeg", imageQuality)
-      const imageBytes = await fetch(imageDataUrl).then(res => res.arrayBuffer())
-
-      // Embed compressed image in new PDF
-      const image = await pdfDoc.embedJpg(imageBytes)
-      const newPage = pdfDoc.addPage([viewport.width, viewport.height])
-      newPage.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: viewport.width,
-        height: viewport.height,
-      })
-    }
-
-    // Save with compression options
-    const compressedPdfBytes = await pdfDoc.save({
-      useObjectStreams: true,
-      addDefaultPage: false,
-    })
-
-    return compressedPdfBytes
-  }
-
   const handleCompress = async () => {
     if (!file) return
 
     setCompressing(true)
     try {
-      const arrayBuffer = await file.arrayBuffer()
-      const compressedPdfBytes = await compressPDF(arrayBuffer, quality)
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('quality', quality)
 
-      const compressedBlob = new Blob([compressedPdfBytes], { type: "application/pdf" })
-      const originalSize = file.size
-      const compressedSize = compressedBlob.size
-      const ratio = Math.round(((originalSize - compressedSize) / originalSize) * 100)
+      const response = await fetch('/api/compress-pdf', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to compress PDF')
+      }
+
+      const compressedBlob = await response.blob()
+      const originalSize = parseInt(response.headers.get('X-Original-Size') || file.size.toString())
+      const compressedSize = parseInt(response.headers.get('X-Compressed-Size') || compressedBlob.size.toString())
+      const ratio = parseInt(response.headers.get('X-Compression-Ratio') || '0')
 
       setCompressedData({
         blob: compressedBlob,
