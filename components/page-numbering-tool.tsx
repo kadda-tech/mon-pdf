@@ -29,6 +29,7 @@ import {
 import { addPageNumbers, NumberPosition, NumberStyle, PageNumberingOptions } from '@/lib/pdf/page-numbering';
 import { PageNumberPositionSelector } from '@/components/page-number-position-selector';
 import { EmailShareButton } from '@/components/email-share-button';
+import { FilenameDialog } from '@/components/filename-dialog';
 
 // Lazy load PDF viewer to avoid SSR issues
 const PDFViewer = lazy(() => import('@/components/pdf-viewer').then(mod => ({ default: mod.PDFViewer })));
@@ -47,6 +48,7 @@ export function PageNumberingTool() {
   const [showPdfViewer, setShowPdfViewer] = useState(false);
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null);
 
   // State
   const [file, setFile] = useState<File | null>(null);
@@ -55,8 +57,11 @@ export function PageNumberingTool() {
     percentage: 0,
     message: '',
   });
-  const [processedPdf, setProcessedPdf] = useState<Uint8Array | null>(null);
+  const [processedPdf, setProcessedPdf] = useState<Blob | null>(null);
+  const [processedPdfData, setProcessedPdfData] = useState<Uint8Array | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showFilenameDialog, setShowFilenameDialog] = useState(false);
+  const [pendingFilename, setPendingFilename] = useState("");
 
   // Options state
   const [position, setPosition] = useState<NumberPosition>('bottom-center');
@@ -123,10 +128,15 @@ export function PageNumberingTool() {
       }
 
       const blob = await response.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-      const result = new Uint8Array(arrayBuffer);
+      console.log('Received blob size:', blob.size, 'type:', blob.type);
 
-      setProcessedPdf(result);
+      // Store blob for download
+      setProcessedPdf(blob);
+
+      // Convert to Uint8Array for PDF viewer
+      const arrayBuffer = await blob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      setProcessedPdfData(uint8Array);
       setProgress({
         stage: 'complete',
         percentage: 100,
@@ -149,31 +159,52 @@ export function PageNumberingTool() {
     }
   };
 
+  const getDefaultFilename = () => {
+    if (!file) return "numbered.pdf";
+    return file.name.replace('.pdf', '_numbered.pdf');
+  };
+
   const handleDownload = () => {
-    if (!processedPdf || !file) return;
+    setShowFilenameDialog(true);
+  };
 
-    const blob = new Blob([processedPdf], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = file.name.replace('.pdf', '_numbered.pdf');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
+    if (!processedPdf) {
+      console.error('No processed PDF found');
+      return;
+    }
 
-    toast.success(t('tools.pageNumbering.downloadSuccess'));
+    console.log('handleFilenameConfirm - processedPdf blob size:', processedPdf.size);
+
+    setPendingFilename(filename);
+
+    if (action === 'download') {
+      const url = URL.createObjectURL(processedPdf);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success(t('tools.pageNumbering.downloadSuccess'));
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click();
+    }
   };
 
   const generateBlob = async (): Promise<Blob | null> => {
     if (!processedPdf) return null;
-    return new Blob([processedPdf], { type: 'application/pdf' });
+    return processedPdf;
   };
 
   const resetState = () => {
     setFile(null);
     setProgress({ stage: 'idle', percentage: 0, message: '' });
     setProcessedPdf(null);
+    setProcessedPdfData(null);
     setError(null);
     setShowPdfViewer(false);
     if (fileInputRef.current) {
@@ -411,18 +442,10 @@ export function PageNumberingTool() {
               </Alert>
 
               <div className="flex flex-col gap-2">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button onClick={handleDownload} className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                    <Download className="mr-2 h-4 w-4" />
-                    {t('tools.pageNumbering.download')}
-                  </Button>
-                  <EmailShareButton
-                    onGenerateBlob={generateBlob}
-                    fileName={file ? file.name.replace('.pdf', '_numbered.pdf') : "numbered.pdf"}
-                    shareMessage="I've added page numbers to a PDF using Mon PDF."
-                    className="sm:w-auto w-full"
-                  />
-                </div>
+                <Button onClick={handleDownload} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  <Download className="mr-2 h-4 w-4" />
+                  Save PDF
+                </Button>
                 <Button onClick={resetState} variant="outline" className="w-full">
                   <Trash2 className="mr-2 h-4 w-4" />
                   {t('tools.pageNumbering.processAnother')}
@@ -438,6 +461,26 @@ export function PageNumberingTool() {
               {t('tools.pageNumbering.reset')}
             </Button>
           )}
+
+          {/* Hidden Email Share Button */}
+          <div className="hidden">
+            <EmailShareButton
+              ref={emailShareButtonRef}
+              onGenerateBlob={generateBlob}
+              fileName={pendingFilename || getDefaultFilename()}
+              shareMessage="I've added page numbers to a PDF using Mon PDF."
+            />
+          </div>
+
+          {/* Filename Dialog */}
+          <FilenameDialog
+            open={showFilenameDialog}
+            onOpenChange={setShowFilenameDialog}
+            defaultFilename={getDefaultFilename()}
+            onConfirm={handleFilenameConfirm}
+            title="Save Numbered PDF"
+            description="Choose a filename for your PDF with page numbers"
+          />
         </CardContent>
       </Card>
 
@@ -452,7 +495,7 @@ export function PageNumberingTool() {
               </div>
             </div>
           }>
-            <PDFViewer file={processedPdf} className="h-[800px]" />
+            <PDFViewer file={processedPdfData} className="h-[800px]" />
           </Suspense>
         </div>
       )}
