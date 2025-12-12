@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { PDFDocument, rgb, StandardFonts, degrees } from "pdf-lib"
 import { Button } from "@/components/ui/button"
 import { FileUploadZone } from "@/components/file-upload-zone"
@@ -10,12 +10,16 @@ import { Type, Download } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { PDFCanvasEditor, type TextElement } from "@/components/pdf-canvas-editor"
 import { EmailShareButton } from "@/components/email-share-button"
+import { FilenameDialog } from "@/components/filename-dialog"
 
 export function AddTextTool() {
   const dispatch = useAppDispatch()
   const { files, processing } = useAppSelector((state) => state.pdf)
   const [textElements, setTextElements] = useState<TextElement[]>([])
   const [modifiedBlob, setModifiedBlob] = useState<Blob | null>(null)
+  const [showFilenameDialog, setShowFilenameDialog] = useState(false)
+  const [pendingFilename, setPendingFilename] = useState("")
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null)
 
   const handleFilesSelected = async (fileList: FileList) => {
     const newFiles = await Promise.all(
@@ -90,15 +94,27 @@ export function AddTextTool() {
     return modifiedBlob
   }
 
-  const handleDownload = () => {
-    if (!modifiedBlob || !files[0]) return
+  const getDefaultFilename = () => {
+    if (!files[0]) return "text-added.pdf"
+    return `text-added-${files[0].name}`
+  }
 
-    const url = URL.createObjectURL(modifiedBlob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `text-added-${files[0].name}`
-    a.click()
-    URL.revokeObjectURL(url)
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
+    if (!modifiedBlob) return
+
+    setPendingFilename(filename)
+
+    if (action === 'download') {
+      const url = URL.createObjectURL(modifiedBlob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click()
+    }
   }
 
   return (
@@ -152,26 +168,38 @@ export function AddTextTool() {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  onClick={handleDownload}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                  size="lg"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download PDF
-                </Button>
-                <EmailShareButton
-                  onGenerateBlob={generateBlob}
-                  fileName={`text-added-${files[0].name}`}
-                  shareMessage="I've added text to a PDF using Mon PDF."
-                  className="sm:w-auto w-full"
-                />
-              </div>
+              <Button
+                onClick={() => setShowFilenameDialog(true)}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                size="lg"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Save PDF
+              </Button>
             </div>
           )}
         </Card>
       )}
+
+      {/* Hidden Email Share Button */}
+      <div className="hidden">
+        <EmailShareButton
+          ref={emailShareButtonRef}
+          onGenerateBlob={generateBlob}
+          fileName={pendingFilename || getDefaultFilename()}
+          shareMessage="I've added text to a PDF using Mon PDF."
+        />
+      </div>
+
+      {/* Filename Dialog */}
+      <FilenameDialog
+        open={showFilenameDialog}
+        onOpenChange={setShowFilenameDialog}
+        defaultFilename={getDefaultFilename()}
+        onConfirm={handleFilenameConfirm}
+        title="Save PDF with Text"
+        description="Choose a filename for your PDF"
+      />
     </div>
   )
 }

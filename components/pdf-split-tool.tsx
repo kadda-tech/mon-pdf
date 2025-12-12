@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react"
+import {useState, useRef} from "react"
 import {useTranslations} from 'next-intl'
 import {PDFDocument} from "pdf-lib"
 import {Button} from "@/components/ui/button"
@@ -13,6 +13,7 @@ import {addFiles, clearFiles, setProcessing} from "@/lib/features/pdf-slice"
 import {CheckSquare, Download, Scissors, Square} from "lucide-react"
 import {PDFPageSelector} from "@/components/pdf-page-selector"
 import {EmailShareButton} from "@/components/email-share-button"
+import {FilenameDialog} from "@/components/filename-dialog"
 
 export function PDFSplitTool() {
   const t = useTranslations()
@@ -20,6 +21,10 @@ export function PDFSplitTool() {
   const { files, processing } = useAppSelector((state) => state.pdf)
   const [pageRange, setPageRange] = useState<string>("")
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set())
+  const [showFilenameDialog, setShowFilenameDialog] = useState(false)
+  const [pendingFilename, setPendingFilename] = useState("")
+  const [pendingBlob, setPendingBlob] = useState<Blob | null>(null)
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null)
 
   const handleFilesSelected = async (fileList: FileList) => {
     // Clear existing files first since this tool only handles one file at a time
@@ -98,6 +103,11 @@ export function PDFSplitTool() {
     }
   }
 
+  const getDefaultFilename = () => {
+    if (!files[0]) return "split.pdf"
+    return `selected-pages-${files[0].name}`
+  }
+
   const handleDownloadSelected = async () => {
     if (files.length === 0 || selectedPages.size === 0) return
 
@@ -107,12 +117,8 @@ export function PDFSplitTool() {
       const blob = await generatePDFBlob()
       if (!blob) return
 
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `selected-pages-${files[0].name}`
-      a.click()
-      URL.revokeObjectURL(url)
+      setPendingBlob(blob)
+      setShowFilenameDialog(true)
     } catch (error) {
       console.error("Error downloading selected pages:", error)
       alert("Failed to split PDF. Please try again.")
@@ -145,18 +151,36 @@ export function PDFSplitTool() {
       }
 
       const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `split-${pageRange.replace(/,/g, '-')}-${files[0].name}`
-      a.click()
-      URL.revokeObjectURL(url)
+      setPendingBlob(blob)
+      setShowFilenameDialog(true)
     } catch (error) {
       console.error("Error splitting PDF:", error)
       alert("Failed to split PDF. Please try again.")
     } finally {
       dispatch(setProcessing(false))
     }
+  }
+
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
+    if (!pendingBlob) return
+
+    setPendingFilename(filename)
+
+    if (action === 'download') {
+      const url = URL.createObjectURL(pendingBlob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click()
+    }
+  }
+
+  const generateBlobForEmail = async (): Promise<Blob | null> => {
+    return pendingBlob
   }
 
   return (
@@ -206,36 +230,24 @@ export function PDFSplitTool() {
 
             {selectedPages.size > 0 && (
               <Card className="p-6 space-y-4 sticky bottom-4 shadow-lg border-2 border-purple-500/20 bg-gradient-to-br from-background to-purple-50/30 dark:to-purple-950/10">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {/* Primary Download Button */}
-                  <Button
-                    onClick={handleDownloadSelected}
-                    disabled={processing}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group"
-                    size="lg"
-                  >
-                    {processing ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        {t('tools.split.downloading')}
-                      </>
-                    ) : (
-                      <>
-                        <Download className="mr-2 h-5 w-5 group-hover:animate-bounce" />
-                        {t('tools.split.downloadSelected')}
-                      </>
-                    )}
-                  </Button>
-
-                  {/* Email Share Button */}
-                  <EmailShareButton
-                    onGenerateBlob={generatePDFBlob}
-                    fileName={`selected-pages-${files[0].name}`}
-                    shareMessage={`I've extracted ${selectedPages.size} ${selectedPages.size === 1 ? 'page' : 'pages'} from a PDF document using Mon PDF.`}
-                    disabled={processing}
-                    className="sm:w-auto w-full"
-                  />
-                </div>
+                <Button
+                  onClick={handleDownloadSelected}
+                  disabled={processing}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  size="lg"
+                >
+                  {processing ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      {t('tools.split.downloading')}
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-5 w-5 group-hover:animate-bounce" />
+                      Save Selected Pages
+                    </>
+                  )}
+                </Button>
 
                 {/* Info text */}
                 <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground pt-2">
@@ -272,6 +284,26 @@ export function PDFSplitTool() {
             </Card>
           </>
         )}
+
+        {/* Hidden Email Share Button */}
+        <div className="hidden">
+          <EmailShareButton
+            ref={emailShareButtonRef}
+            onGenerateBlob={generateBlobForEmail}
+            fileName={pendingFilename || getDefaultFilename()}
+            shareMessage={`I've extracted pages from a PDF document using Mon PDF.`}
+          />
+        </div>
+
+        {/* Filename Dialog */}
+        <FilenameDialog
+          open={showFilenameDialog}
+          onOpenChange={setShowFilenameDialog}
+          defaultFilename={getDefaultFilename()}
+          onConfirm={handleFilenameConfirm}
+          title="Save Split PDF"
+          description="Choose a filename for your PDF"
+        />
       </CardContent>
     </Card>
   )

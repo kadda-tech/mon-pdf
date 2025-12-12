@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react"
+import {useState, useRef} from "react"
 import {useTranslations} from 'next-intl'
 import {PDFDocument} from "pdf-lib"
 import {GripVertical, RotateCcw, Upload, X, Download} from "lucide-react"
@@ -8,6 +8,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Button} from "@/components/ui/button"
 import {Alert, AlertDescription} from "@/components/ui/alert"
 import {EmailShareButton} from "@/components/email-share-button"
+import {FilenameDialog} from "@/components/filename-dialog"
 import * as pdfjs from "pdfjs-dist";
 
 interface PageData {
@@ -26,6 +27,9 @@ export function PDFOrganizeTool() {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [organizedBlob, setOrganizedBlob] = useState<Blob | null>(null)
+  const [showFilenameDialog, setShowFilenameDialog] = useState(false)
+  const [pendingFilename, setPendingFilename] = useState("")
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null)
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = event.target.files?.[0]
@@ -167,6 +171,11 @@ export function PDFOrganizeTool() {
     return organizedBlob
   }
 
+  const getDefaultFilename = () => {
+    if (!file) return "organized.pdf"
+    return `organized_${file.name}`
+  }
+
   const handleDownload = async () => {
     if (!file) return
 
@@ -202,19 +211,34 @@ export function PDFOrganizeTool() {
 
       const blob = await response.blob()
       setOrganizedBlob(blob)
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `organized_${file.name}`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
+
+      // Show filename dialog instead of auto-downloading
+      setShowFilenameDialog(true)
     } catch (err) {
       console.error("Error organizing PDF:", err)
       setError("Failed to organize PDF. Please try again.")
     } finally {
       setIsProcessing(false)
+    }
+  }
+
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
+    if (!organizedBlob) return
+
+    setPendingFilename(filename)
+
+    if (action === 'download') {
+      const url = URL.createObjectURL(organizedBlob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click()
     }
   }
 
@@ -348,37 +372,38 @@ export function PDFOrganizeTool() {
                   </Alert>
                 )}
 
-                {!organizedBlob ? (
-                  <Button
-                    onClick={handleDownload}
-                    disabled={isProcessing || activePageCount === 0}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {isProcessing ? t('tools.organizePdf.organizing') : t('tools.organizePdf.downloadOrganized')}
-                  </Button>
-                ) : (
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button
-                      onClick={handleDownload}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                      size="lg"
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      {t('tools.organizePdf.downloadOrganized')}
-                    </Button>
-                    <EmailShareButton
-                      onGenerateBlob={generateBlob}
-                      fileName={file ? `organized_${file.name}` : "organized.pdf"}
-                      shareMessage="I've organized a PDF document using Mon PDF."
-                      className="sm:w-auto w-full"
-                    />
-                  </div>
-                )}
+                <Button
+                  onClick={handleDownload}
+                  disabled={isProcessing || activePageCount === 0}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isProcessing ? t('tools.organizePdf.organizing') : t('tools.organizePdf.downloadOrganized')}
+                </Button>
               </>
             )}
           </div>
         )}
+
+        {/* Hidden Email Share Button */}
+        <div className="hidden">
+          <EmailShareButton
+            ref={emailShareButtonRef}
+            onGenerateBlob={generateBlob}
+            fileName={pendingFilename || getDefaultFilename()}
+            shareMessage="I've organized a PDF document using Mon PDF."
+          />
+        </div>
+
+        {/* Filename Dialog */}
+        <FilenameDialog
+          open={showFilenameDialog}
+          onOpenChange={setShowFilenameDialog}
+          defaultFilename={getDefaultFilename()}
+          onConfirm={handleFilenameConfirm}
+          title="Save Organized PDF"
+          description="Choose a filename for your organized PDF"
+        />
       </CardContent>
     </Card>
   )

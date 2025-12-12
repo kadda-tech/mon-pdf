@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTranslations } from 'next-intl'
-import { Loader2, Download, FileCheck, Upload, Check } from "lucide-react"
+import { Loader2, Download, FileCheck, Upload, Check, Mail } from "lucide-react"
+import { FilenameDialog } from "@/components/filename-dialog"
 import { EmailShareButton } from "@/components/email-share-button"
 
 type QualityLevel = "high" | "medium" | "low"
@@ -28,6 +29,9 @@ export function PDFCompressTool() {
     }
   } | null>(null)
   const [selectedQuality, setSelectedQuality] = useState<QualityLevel | null>(null)
+  const [showFilenameDialog, setShowFilenameDialog] = useState(false)
+  const [pendingFilename, setPendingFilename] = useState("")
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null)
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes"
@@ -81,20 +85,32 @@ export function PDFCompressTool() {
     return new Blob([bytes], { type: 'application/pdf' })
   }
 
-  const handleDownload = async () => {
-    if (!compressedData || !file || !selectedQuality) return
+  const getDefaultFilename = () => {
+    if (!file) return "compressed.pdf"
+    return file.name.replace(/\.pdf$/i, `_compressed_${selectedQuality}.pdf`)
+  }
 
-    const blob = await generateCompressedBlob()
-    if (!blob) return
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
+    if (!compressedData || !selectedQuality) return
 
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = file.name.replace(/\.pdf$/i, `_compressed_${selectedQuality}.pdf`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    setPendingFilename(filename)
+
+    if (action === 'download') {
+      const blob = await generateCompressedBlob()
+      if (!blob) return
+
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click()
+    }
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -343,18 +359,14 @@ export function PDFCompressTool() {
                 {/* Action Buttons */}
                 {selectedQuality && (
                   <div className="flex flex-col gap-3 pt-4">
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button onClick={handleDownload} className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" size="lg">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download ({selectedQuality} quality)
-                      </Button>
-                      <EmailShareButton
-                        onGenerateBlob={generateCompressedBlob}
-                        fileName={file?.name.replace(/\.pdf$/i, `_compressed_${selectedQuality}.pdf`) || "compressed.pdf"}
-                        shareMessage="I've compressed a PDF document using Mon PDF."
-                        className="sm:w-auto w-full"
-                      />
-                    </div>
+                    <Button
+                      onClick={() => setShowFilenameDialog(true)}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                      size="lg"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Save ({selectedQuality} quality)
+                    </Button>
                     <Button onClick={handleReset} variant="outline" size="lg">
                       Start Over
                     </Button>
@@ -364,6 +376,26 @@ export function PDFCompressTool() {
             )}
           </div>
         )}
+
+        {/* Hidden Email Share Button */}
+        <div className="hidden">
+          <EmailShareButton
+            ref={emailShareButtonRef}
+            onGenerateBlob={generateCompressedBlob}
+            fileName={pendingFilename || getDefaultFilename()}
+            shareMessage="I've compressed a PDF document using Mon PDF."
+          />
+        </div>
+
+        {/* Filename Dialog */}
+        <FilenameDialog
+          open={showFilenameDialog}
+          onOpenChange={setShowFilenameDialog}
+          defaultFilename={getDefaultFilename()}
+          onConfirm={handleFilenameConfirm}
+          title="Save Compressed PDF"
+          description="Choose a filename for your compressed PDF"
+        />
       </CardContent>
     </Card>
   )

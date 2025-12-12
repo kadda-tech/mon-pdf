@@ -1,6 +1,6 @@
 "use client"
 
-import {useState} from "react"
+import {useState, forwardRef} from "react"
 import {CheckCircle2, Mail, XCircle} from "lucide-react"
 import {Button} from "@/components/ui/button"
 import {
@@ -90,7 +90,7 @@ interface EmailShareButtonProps {
   iconOnlyMobile?: boolean
 }
 
-export function EmailShareButton({
+export const EmailShareButton = forwardRef<HTMLButtonElement, EmailShareButtonProps>(({
   onGenerateBlob,
   fileName,
   shareMessage,
@@ -99,7 +99,7 @@ export function EmailShareButton({
   size = "lg",
   className = "",
   iconOnlyMobile = true,
-}: EmailShareButtonProps) {
+}, ref) => {
   const t = useTranslations()
   const [showEmailDialog, setShowEmailDialog] = useState(false)
   const [recipientEmail, setRecipientEmail] = useState('')
@@ -174,6 +174,7 @@ export function EmailShareButton({
   return (
     <>
     <Button
+      ref={ref}
       onClick={handleEmailClick}
       disabled={disabled}
       variant={variant}
@@ -260,4 +261,6 @@ export function EmailShareButton({
     </Dialog>
   </>
   )
-}
+})
+
+EmailShareButton.displayName = 'EmailShareButton'

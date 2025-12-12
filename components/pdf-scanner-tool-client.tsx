@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import QRCode from 'qrcode'
@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { PDFDocument } from 'pdf-lib'
 import { EmailShareButton } from '@/components/email-share-button'
+import { FilenameDialog } from '@/components/filename-dialog'
 
 interface ScannedImage {
   data: string // base64
@@ -38,6 +39,9 @@ export function PDFScannerToolClient() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [lastCheckTime, setLastCheckTime] = useState<number>(Date.now())
   const [scannedBlob, setScannedBlob] = useState<Blob | null>(null)
+  const [showFilenameDialog, setShowFilenameDialog] = useState(false)
+  const [pendingFilename, setPendingFilename] = useState("")
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null)
 
   // Check for existing session from URL params (mobile return flow)
   useEffect(() => {
@@ -252,17 +256,28 @@ export function PDFScannerToolClient() {
     return scannedBlob
   }
 
-  const handleDownload = () => {
+  const getDefaultFilename = () => {
+    return `scanned_${Date.now()}.pdf`
+  }
+
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
     if (!scannedBlob) return
 
-    const url = URL.createObjectURL(scannedBlob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `scanned_${Date.now()}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
+    setPendingFilename(filename)
+
+    if (action === 'download') {
+      const url = URL.createObjectURL(scannedBlob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click()
+    }
   }
 
   return (
@@ -353,22 +368,13 @@ export function PDFScannerToolClient() {
                       </p>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                      <Button
-                        onClick={handleDownload}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                      >
-                        <Download className="mr-2 h-4 w-4" />
-                        Download PDF
-                      </Button>
-                      <EmailShareButton
-                        onGenerateBlob={generateBlob}
-                        fileName={`scanned_${Date.now()}.pdf`}
-                        shareMessage={`I've scanned ${images.length} page${images.length !== 1 ? 's' : ''} to PDF using Mon PDF.`}
-                        className="w-full"
-                        iconOnlyMobile={false}
-                      />
-                    </div>
+                    <Button
+                      onClick={() => setShowFilenameDialog(true)}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Save PDF
+                    </Button>
                   </div>
                 )}
 
@@ -447,6 +453,26 @@ export function PDFScannerToolClient() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Hidden Email Share Button */}
+      <div className="hidden">
+        <EmailShareButton
+          ref={emailShareButtonRef}
+          onGenerateBlob={generateBlob}
+          fileName={pendingFilename || getDefaultFilename()}
+          shareMessage={`I've scanned ${images.length} page${images.length !== 1 ? 's' : ''} to PDF using Mon PDF.`}
+        />
+      </div>
+
+      {/* Filename Dialog */}
+      <FilenameDialog
+        open={showFilenameDialog}
+        onOpenChange={setShowFilenameDialog}
+        defaultFilename={getDefaultFilename()}
+        onConfirm={handleFilenameConfirm}
+        title="Save Scanned PDF"
+        description="Choose a filename for your scanned PDF"
+      />
     </div>
   )
 }

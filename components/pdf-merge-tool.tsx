@@ -1,10 +1,11 @@
 "use client"
 
-import React from 'react'
+import React, { useRef } from 'react'
 import {useTranslations} from 'next-intl'
 import {PDFDocument} from "pdf-lib"
 import {Combine, Download, GripVertical, Upload, X} from "lucide-react"
 import {EmailShareButton} from "@/components/email-share-button"
+import {FilenameDialog} from "@/components/filename-dialog"
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {FileUploadZone} from "@/components/file-upload-zone"
@@ -29,6 +30,9 @@ export function PDFMergeTool() {
   const [mergedBlob, setMergedBlob] = React.useState<Blob | null>(null)
   const [filesWithPreviews, setFilesWithPreviews] = React.useState<PDFFileWithPreview[]>([])
   const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null)
+  const [showFilenameDialog, setShowFilenameDialog] = React.useState(false)
+  const [pendingFilename, setPendingFilename] = React.useState("")
+  const emailShareButtonRef = useRef<HTMLButtonElement>(null)
 
   const handleFilesSelected = async (fileList: FileList) => {
     const newFiles = await Promise.all(
@@ -178,15 +182,26 @@ export function PDFMergeTool() {
     return mergedBlob
   }
 
-  const handleDownload = () => {
+  const getDefaultFilename = () => {
+    return "merged-document.pdf"
+  }
+
+  const handleFilenameConfirm = async (filename: string, action: 'download' | 'email') => {
     if (!mergedBlob) return
 
-    const url = URL.createObjectURL(mergedBlob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "merged-document.pdf"
-    a.click()
-    URL.revokeObjectURL(url)
+    setPendingFilename(filename)
+
+    if (action === 'download') {
+      const url = URL.createObjectURL(mergedBlob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+    } else {
+      // Trigger email share button click
+      emailShareButtonRef.current?.click()
+    }
   }
 
   const handleReset = () => {
@@ -215,18 +230,14 @@ export function PDFMergeTool() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button onClick={handleDownload} className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" size="lg">
-                <Download className="mr-2 h-4 w-4" />
-                {t('tools.merge.downloadMerged')}
-              </Button>
-              <EmailShareButton
-                onGenerateBlob={generateMergedBlob}
-                fileName="merged-document.pdf"
-                shareMessage={`I've merged ${filesWithPreviews.length} PDF documents into one using Mon PDF.`}
-                className="sm:w-auto w-full"
-              />
-            </div>
+            <Button
+              onClick={() => setShowFilenameDialog(true)}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              size="lg"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Save Merged PDF
+            </Button>
 
             <Button onClick={handleReset} variant="outline" size="lg">
               Start Over
@@ -352,6 +363,26 @@ export function PDFMergeTool() {
             )}
           </>
         )}
+
+        {/* Hidden Email Share Button */}
+        <div className="hidden">
+          <EmailShareButton
+            ref={emailShareButtonRef}
+            onGenerateBlob={generateMergedBlob}
+            fileName={pendingFilename || getDefaultFilename()}
+            shareMessage={`I've merged ${filesWithPreviews.length} PDF documents into one using Mon PDF.`}
+          />
+        </div>
+
+        {/* Filename Dialog */}
+        <FilenameDialog
+          open={showFilenameDialog}
+          onOpenChange={setShowFilenameDialog}
+          defaultFilename={getDefaultFilename()}
+          onConfirm={handleFilenameConfirm}
+          title="Save Merged PDF"
+          description="Choose a filename for your merged PDF"
+        />
       </CardContent>
     </Card>
   )
