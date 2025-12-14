@@ -10,6 +10,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Increase body size limit for API routes (default is 1mb)
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
+  },
   async rewrites() {
     return [
       {

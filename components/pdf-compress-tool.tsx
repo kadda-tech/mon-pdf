@@ -49,14 +49,15 @@ export function PDFCompressTool() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await fetch('/api/compress-pdf-all', {
+      // Use Python backend for compression (no body size limits)
+      const response = await fetch('/api/compress-pdf-proxy', {
         method: 'POST',
         body: formData,
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to compress PDF')
+        const error = await response.json().catch(() => ({ error: 'Failed to compress PDF' }))
+        throw new Error(error.detail || error.error || 'Failed to compress PDF')
       }
 
       const result = await response.json()
@@ -131,14 +132,23 @@ export function PDFCompressTool() {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await fetch('/api/compress-pdf-all', {
+      // Use Python backend for compression (no body size limits)
+      const response = await fetch('/api/compress-pdf-proxy', {
         method: 'POST',
         body: formData,
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to compress PDF')
+        const error = await response.json().catch(() => ({ error: 'Failed to compress PDF' }))
+        const errorMessage = error.detail || error.details || error.error || 'Failed to compress PDF'
+
+        // Show specific error messages based on status
+        if (response.status === 413) {
+          alert(`File too large: ${errorMessage}\n\nPlease try a smaller file or split your PDF first.`)
+        } else {
+          alert(`Compression failed: ${errorMessage}\n\nPlease try again or contact support if the issue persists.`)
+        }
+        throw new Error(errorMessage)
       }
 
       const result = await response.json()
@@ -149,7 +159,8 @@ export function PDFCompressTool() {
       })
     } catch (error) {
       console.error("Error compressing PDF:", error)
-      alert("Failed to compress PDF. Please try again.")
+      // Error already shown in alert above
+      setFile(null) // Reset file on error
     } finally {
       setCompressing(false)
     }
